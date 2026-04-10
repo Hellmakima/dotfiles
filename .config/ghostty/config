@@ -1,0 +1,16 @@
+# Main Ghostty config
+
+# Load theme
+config-file = ~/.config/ghostty/current-theme.conf
+# Font
+font-family = "JetBrains Mono"
+font-size = 24
+scrollback-limit = 200000000
+background-opacity = 0.8
+
+# Cursor
+cursor-style = block
+
+# Optional
+window-padding-x = 10
+window-padding-y = 10

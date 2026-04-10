@@ -1,0 +1,9 @@
+[services.moto]
+type = "sftp"
+host = "moto"
+user = "hell"
+port = 8022
+# or use one of:
+# key_file = "~/.ssh/id_rsa"
+password = "pass"
+# identity_agent = "/path/to/agent.sock"

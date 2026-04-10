@@ -1,0 +1,96 @@
+[[plugin.deps]]
+use = "dedukun/relative-motions"
+rev = "a603d9e"
+hash = "e02a788e5b8ae0fb47fd0193dda589cc"
+
+[flavor]
+deps = []
+
+[[mgr.prepend_keymap]]
+on = [ "1" ]
+run = "plugin relative-motions 1"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "2" ]
+run = "plugin relative-motions 2"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "3" ]
+run = "plugin relative-motions 3"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "4" ]
+run = "plugin relative-motions 4"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "5" ]
+run = "plugin relative-motions 5"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "6" ]
+run = "plugin relative-motions 6"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "7" ]
+run = "plugin relative-motions 7"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "8" ]
+run = "plugin relative-motions 8"
+desc = "Move in relative steps"
+
+[[mgr.prepend_keymap]]
+on = [ "9" ]
+run = "plugin relative-motions 9"
+desc = "Move in relative steps"
+
+# bookmark
+# If your yazi version is lower than v25.5.28, repleace "mgr" by "manager".
+[[mgr.prepend_keymap]]
+on = [ "m" ]
+run = "plugin bookmarks save"
+desc = "Save current position as a bookmark"
+
+[[mgr.prepend_keymap]]
+on = [ "'" ]
+run = "plugin bookmarks jump"
+desc = "Jump to a bookmark"
+
+[[mgr.prepend_keymap]]
+on = [ "b", "d" ]
+run = "plugin bookmarks delete"
+desc = "Delete a bookmark"
+
+[[mgr.prepend_keymap]]
+on = [ "b", "D" ]
+run = "plugin bookmarks delete_all"
+desc = "Delete all bookmarks"
+
+# copy file to cb
+[[mgr.prepend_keymap]]
+on  = "y"
+run = [ "yank", 'plugin clipboard -- --action=copy' ]
+
+[[mgr.prepend_keymap]]
+on  = "<C-p>"
+run = [ 'plugin clipboard -- --action=paste' ]
+
+# zoom
+# keymap.toml
+[[mgr.prepend_keymap]]
+on   = "+"
+run  = "plugin zoom 1"
+desc = "Zoom in hovered file"
+
+[[mgr.prepend_keymap]]
+on   = "-"
+run  = "plugin zoom -1"
+desc = "Zoom out hovered file"
+

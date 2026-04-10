@@ -1,0 +1,8 @@
+Setup ~/dotfiles git repo
+add the files that you want and delete the original
+e.g. cp ~/.zshrc ~/dotfiles/.zshrc && rm ~/.zshrc
+the file structure should be the same
+e.g. cp -r ~/.config/yazi ~/dotfiles/.config/yazi && rm -rf ~/.config/yazi
+then remap them using `stow .` inside ~/dotfiles
+this creates symlinks
+[Ref](https://www.youtube.com/watch?v=y6XCebnB9gs)

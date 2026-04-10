@@ -1,0 +1,14 @@
+[manager]
+# Use plain borders for right angles instead of rounded corners
+# border = "plain"
+ratio = [1, 2, 6]
+
+[preview]
+max_width = 10000
+max_height = 20000
+image_delay = 100
+
+[opener]
+image = [
+    { run = "magick %f", block = false }
+]
