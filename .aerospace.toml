@@ -222,3 +222,7 @@ on-mode-changed = []
 if.app-id = "com.mitchellh.ghostty"
 check-further-callbacks = true
 run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "com.sublimetext.4"
+run = "move-node-to-workspace S"
