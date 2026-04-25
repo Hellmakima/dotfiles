@@ -33,6 +33,7 @@ export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 # Yazi editor
 export EDITOR="nvim"
 
+alias b='btop'
 alias c='clear'
 alias cp='cp -i'
 alias d='yazi'
@@ -99,7 +100,17 @@ cn() {
 
   echo "Creating conda env: $name"
 
-  conda create -n "$name" python=3.10.12 -y || return 1
+  # default
+  local pyver="3.10.12"
+
+  # if project mentions 3.12 anywhere → use it
+  if grep -q "3.12.11" pyproject.toml 2>/dev/null; then
+    pyver="3.12.11"
+  fi
+
+  echo "Using Python $pyver"
+
+  conda create -n "$name" python="$pyver" -y || return 1
   conda activate "$name" || return 1
 
   pip install poetry || return 1
