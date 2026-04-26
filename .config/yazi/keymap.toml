@@ -59,6 +59,11 @@ run = "plugin bookmarks save"
 desc = "Save current position as a bookmark"
 
 [[mgr.prepend_keymap]]
+on = [ "g", "s" ]
+run = "cd ~/s"
+desc = "Go ~/s"
+
+[[mgr.prepend_keymap]]
 on = [ "'" ]
 run = "plugin bookmarks jump"
 desc = "Jump to a bookmark"
