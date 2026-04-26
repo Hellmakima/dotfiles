@@ -123,7 +123,7 @@ cn() {
 
 # Activate conda env named after current directory
 ca() {
-  [[ -f ~/s/files/.env.sh ]] && source ~/s/files/.env.sh
+  [[ -f ~/Documents/files/.env.sh ]] && source ~/Documents/files/.env.sh
   __conda_setup="$('/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
   if [ $? -eq 0 ]; then
       eval "$__conda_setup"
