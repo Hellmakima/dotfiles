@@ -35,6 +35,7 @@ export EDITOR="nvim"
 
 alias b='btop'
 alias c='clear'
+alias cda='conda deactivate'
 alias cp='cp -i'
 alias d='yazi'
 alias gc='cd ~/.config'
