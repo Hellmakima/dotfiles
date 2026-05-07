@@ -1,0 +1,3 @@
+# Border configuration for plain (non-rounded) borders
+[border]
+type = "plain"
