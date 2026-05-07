@@ -47,6 +47,7 @@ alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
 alias r='source ~/.zshrc'
+alias red='redis-tui'
 alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific.
 alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ssh='TERM=xterm-256color ssh'
@@ -87,6 +88,22 @@ mk() {
     return 1
   fi
   mkdir -p "$1" && cd "$1"
+}
+
+# rv -> ripgrep + fzf + open in editor
+rv() {
+  local selected
+  selected=$(
+    rg --line-number "$1" | fzf
+  ) || return
+
+  local file
+  local line
+
+  file=$(echo "$selected" | cut -d: -f1)
+  line=$(echo "$selected" | cut -d: -f2)
+
+  nvim +"$line" "$file"
 }
 
 # --- CONDA
