@@ -7,3 +7,7 @@ port = 8022
 # key_file = "~/.ssh/id_rsa"
 password = "pass"
 # identity_agent = "/path/to/agent.sock"
+
+# use it like this:
+# yazi sftp://moto
+# or visit it once and bookmark it
