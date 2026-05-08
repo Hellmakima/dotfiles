@@ -29,6 +29,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/opt/openjdk@17/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 # PROMPT='%F{red}%BAPPLE%b%f %F{blue}%~%f: '
+export HOMEBREW_NO_ENV_HINTS=1
 
 # Yazi editor
 export EDITOR="nvim"
@@ -37,11 +38,11 @@ alias b='btop'
 alias c='clear'
 alias cda='conda deactivate'
 alias cp='cp -i'
-alias d='yazi'
 alias gc='cd ~/.config'
 alias gd='cd ~/Downloads'
 alias gh='cd ~'
 alias l="eza -l --icons --group-directories-first"
+alias ld="lazydocker"
 alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
@@ -79,6 +80,12 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 
 hi() {
   echo "Hello 🤗"
+}
+
+# yazi with cwd
+d() {
+  yazi --cwd-file=/tmp/yazi-cwd
+  cd "$(cat /tmp/yazi-cwd)"
 }
 
 # mk -> mkdir and cd
@@ -226,5 +233,3 @@ bindkey '^[[1;9D' beginning-of-line
 bindkey '^[[1;9C' end-of-line
 # bindkey '^[[1;3D' backward-word
 # bindkey '^[[1;3C' forward-word
-
-clear
