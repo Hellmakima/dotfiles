@@ -47,7 +47,7 @@ alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
-alias r='source ~/.zshrc'
+alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
 alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific.
 alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
@@ -97,20 +97,26 @@ mk() {
   mkdir -p "$1" && cd "$1"
 }
 
-# rv -> ripgrep + fzf + open in editor
+# rv -> ripgrep + fzf + bat preview + open in nvim
 rv() {
   local selected
   selected=$(
-    rg --line-number "$1" | fzf
+    rg --line-number --color=never "$1" \
+    | fzf --delimiter : \
+          --preview 'line={2}; start=$(( line > 20 ? line - 20 : 0 )); bat --style=numbers --color=always --highlight-line $line --line-range ${start}:$((line+50)) {1}'
   ) || return
 
-  local file
-  local line
+  echo "$selected"
 
+  local file line
   file=$(echo "$selected" | cut -d: -f1)
   line=$(echo "$selected" | cut -d: -f2)
-
   nvim +"$line" "$file"
+}
+
+# fzf previews
+f(){
+    fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'
 }
 
 # --- CONDA
@@ -208,7 +214,7 @@ zle -N fzf-history-widget
 bindkey '^R' fzf-history-widget
 
 : '
-^r # to use it normally, 
+^r # to use it normally,
 history # to see all history
 fc -p # delete all history
 history -d <line_number> # delete specific line
@@ -233,3 +239,5 @@ bindkey '^[[1;9D' beginning-of-line
 bindkey '^[[1;9C' end-of-line
 # bindkey '^[[1;3D' backward-word
 # bindkey '^[[1;3C' forward-word
+
+clear
