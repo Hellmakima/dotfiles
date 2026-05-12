@@ -97,26 +97,46 @@ mk() {
   mkdir -p "$1" && cd "$1"
 }
 
-# rv -> ripgrep + fzf + bat preview + open in nvim
-rv() {
+rr() {
   local selected
+
+  RELOAD='reload:rg --column --line-number --no-heading --color=always --smart-case {q} || :'
+
   selected=$(
-    rg --line-number --color=never "$1" \
-    | fzf --delimiter : \
-          --preview 'line={2}; start=$(( line > 20 ? line - 20 : 0 )); bat --style=numbers --color=always --highlight-line $line --line-range ${start}:$((line+50)) {1}'
+    fzf --disabled --ansi --multi \
+        --bind "start:$RELOAD" \
+        --bind "change:$RELOAD" \
+        --bind 'alt-a:select-all' \
+        --bind 'alt-d:deselect-all' \
+        --bind 'ctrl-/:toggle-preview' \
+        --delimiter : \
+        --preview '
+          line={2}
+          start=$(( line > 20 ? line - 20 : 0 ))
+          bat --style=full \
+              --color=always \
+              --highlight-line "$line" \
+              --line-range "${start}:$((line+50))" \
+              {1}
+        ' \
+        --preview-window 'right:60%:wrap' \
+        --query "$*"
   ) || return
 
   echo "$selected"
 
   local file line
+
   file=$(echo "$selected" | cut -d: -f1)
   line=$(echo "$selected" | cut -d: -f2)
-  nvim +"$line" "$file"
+
+  [ -n "$file" ] && nvim +"$line" "$file"
 }
 
-# fzf previews
+# fuzzy find files with preview; enter = print path, ctrl-o = open in nvim
 f(){
-    fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'
+    fzf --preview 'bat --style=numbers --color=always --line-range :500 {}' \
+        --bind 'ctrl-o:execute(nvim {})+accept'
 }
 
 # --- CONDA
