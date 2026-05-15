@@ -54,6 +54,7 @@ alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ssh='TERM=xterm-256color ssh'
 alias t="tmux"
 alias v='nvim'
+alias x='exit'
 
 # Completion
 ZSH_DISABLE_COMPFIX=true
