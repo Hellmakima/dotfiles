@@ -1,3 +1,5 @@
+clear
+echo "Booting up..."
 
 setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_DUPS
@@ -87,6 +89,21 @@ hi() {
 d() {
   yazi --cwd-file=/tmp/yazi-cwd
   cd "$(cat /tmp/yazi-cwd)"
+}
+
+# Islamic (Hijri) date
+datei() {
+  python3 - <<'EOF'
+import urllib.request, json, datetime
+try:
+    d = datetime.date.today().strftime("%d-%m-%Y")
+    with urllib.request.urlopen(f"https://api.aladhan.com/v1/gToH?date={d}", timeout=3) as r:
+        data = json.load(r)
+    h = data["data"]["hijri"]
+    print(f"{h['month']['en']} {h['day']} {h['year']}H")
+except:
+    pass
+EOF
 }
 
 # mk -> mkdir and cd
