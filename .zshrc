@@ -39,6 +39,7 @@ export EDITOR="nvim"
 alias b='btop'
 alias c='clear'
 alias cda='conda deactivate'
+alias cmd='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias cp='cp -i'
 alias gc='cd ~/.config'
 alias gd='cd ~/Downloads'
@@ -49,7 +50,8 @@ alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
-alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
+alias r='clear && echo rebooting... && source <(tail -n +3 ~/.zshrc)'
+# alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
 alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific.
 alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
