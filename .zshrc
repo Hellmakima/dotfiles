@@ -1,5 +1,5 @@
 clear
-echo "Booting up..."
+printf "Booting up"
 
 setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_DUPS
@@ -7,6 +7,8 @@ setopt EXTENDED_HISTORY
 HISTFILE=~/.zsh_history
 SAVEHIST=10000
 HISTSIZE=10000
+
+printf "."
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -36,6 +38,8 @@ export HOMEBREW_NO_ENV_HINTS=1
 # Yazi editor
 export EDITOR="nvim"
 
+printf "."
+
 alias b='btop'
 alias c='clear'
 alias cda='conda deactivate'
@@ -50,7 +54,7 @@ alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
-alias r='clear && echo rebooting... && source <(tail -n +3 ~/.zshrc)'
+alias r='clear && printf "rebooting" && source <(tail -n +3 ~/.zshrc)'
 # alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
 alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific.
@@ -68,6 +72,7 @@ zstyle ':completion:*' menu select # Enables interactive selection menu
 zstyle ':completion:*' special-dirs true # includes ./ and ../
 zmodload zsh/complist
 compinit
+printf "."
 
 # Enable Ctrl-x-e to edit command line
 autoload -U edit-command-line
