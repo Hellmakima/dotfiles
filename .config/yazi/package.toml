@@ -10,18 +10,18 @@ hash = "92fbb5483657fa7976cdf4e0104e18e0"
 
 [[plugin.deps]]
 use = "XYenon/clipboard"
-rev = "3b96810"
-hash = "13d7eb15a079c735e34124b922322de5"
+rev = "0ac0320"
+hash = "f80172438b4b5c31e94d6c891f734445"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "1962818"
+rev = "be524fb"
 hash = "fa268cb59989a87780605fdcfb8d99a9"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "1db18bb"
-hash = "c8d30a70659f1b880407e61c564ab4e8"
+rev = "be524fb"
+hash = "88e56a64b7ce7c4314427452343fef17"
 
 [flavor]
 deps = []
