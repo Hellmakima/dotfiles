@@ -9,3 +9,5 @@ this creates symlinks
 
 To use different folder (e.g. ~/Projects/dotfiles)
 run `stow -t ~ .` from this folder
+
+For the `.gitignore_global` file to work, use `git config --global core.excludesfile ~/.gitignore_global`

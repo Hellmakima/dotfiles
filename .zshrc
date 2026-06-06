@@ -42,6 +42,10 @@ printf "."
 
 alias b='btop'
 alias c='cd && clear'
+alias cd.='cd ..'
+alias cd..='cd ..'
+alias cd...='cd ../..'
+alias cd-='cd -'
 alias cda='conda deactivate'
 alias cmd='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias cp='cp -i'
@@ -120,6 +124,15 @@ mk() {
     return 1
   fi
   mkdir -p "$1" && cd "$1"
+}
+
+tldr2() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: tldr2 <command>"
+        return 1
+    fi
+
+    curl -s "https://cht.sh/$1?T" | bat --paging=always
 }
 
 rr() {
