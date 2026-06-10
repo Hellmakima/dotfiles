@@ -144,20 +144,17 @@ rr() {
     fzf --disabled --ansi --multi \
         --bind "start:$RELOAD" \
         --bind "change:$RELOAD" \
-        --bind 'alt-a:select-all' \
-        --bind 'alt-d:deselect-all' \
+        --bind 'ctrl-a:select-all' \
+        --bind 'ctrl-d:deselect-all' \
         --bind 'ctrl-/:toggle-preview' \
         --delimiter : \
         --preview '
-          line={2}
-          start=$(( line > 20 ? line - 20 : 0 ))
           bat --style=full \
               --color=always \
-              --highlight-line "$line" \
-              --line-range "${start}:$((line+50))" \
+              --highlight-line {2} \
               {1}
         ' \
-        --preview-window 'right:60%:wrap' \
+        --preview-window 'top:60%:wrap:~4,+{2}+4/3' \
         --query "$*"
   ) || return
 
@@ -165,10 +162,19 @@ rr() {
 
   local file line
 
-  file=$(echo "$selected" | cut -d: -f1)
-  line=$(echo "$selected" | cut -d: -f2)
+  file=$(printf '%s\n' "$selected" | cut -d: -f1)
+  line=$(printf '%s\n' "$selected" | cut -d: -f2)
 
-  [ -n "$file" ] && nvim +"$line" "$file"
+  if [ -n "$file" ]; then
+    printf 'Open [y/N] '
+    read -r answer
+
+    case "$answer" in
+        [yY]|[yY][eE][sS])
+            nvim +"$line" "$file"
+            ;;
+    esac
+  fi
 }
 
 # fuzzy find files with preview; enter = print path, ctrl-o = open in nvim
