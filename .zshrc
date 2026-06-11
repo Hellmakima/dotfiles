@@ -53,6 +53,7 @@ alias gc='cd ~/.config'
 alias gd='cd ~/Downloads'
 alias gh='cd ~'
 alias l="eza -l --icons --group-directories-first"
+alias ls="eza -l --icons --group-directories-first"
 alias ld="lazydocker"
 alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
@@ -178,6 +179,7 @@ rr() {
 }
 
 # fuzzy find files with preview; enter = print path, ctrl-o = open in nvim
+# my fd replacement
 f(){
     fzf --preview 'bat --style=numbers --color=always --line-range :500 {}' \
         --bind 'ctrl-o:execute(nvim {})+accept'
