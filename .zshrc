@@ -41,7 +41,7 @@ export EDITOR="nvim"
 printf "."
 
 alias b='btop'
-alias c='cd && clear'
+alias c='clear'
 alias cd.='cd ..'
 alias cd..='cd ..'
 alias cd...='cd ../..'
@@ -67,7 +67,7 @@ alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ssh='TERM=xterm-256color ssh'
 alias t="tmux"
 alias v='nvim'
-alias x='exit'
+alias x='cd && clear'
 
 # Completion
 ZSH_DISABLE_COMPFIX=true
