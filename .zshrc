@@ -1,5 +1,4 @@
-clear
-printf "Booting up"
+printf "~ > "
 
 setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_DUPS
@@ -7,8 +6,6 @@ setopt EXTENDED_HISTORY
 HISTFILE=~/.zsh_history
 SAVEHIST=10000
 HISTSIZE=10000
-
-printf "."
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -25,10 +22,11 @@ printf "."
 # unset __conda_setup
 # <<< conda initialize <<<
 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+na () {
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+}
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/opt/openjdk@17/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
@@ -37,8 +35,6 @@ export HOMEBREW_NO_ENV_HINTS=1
 
 # Yazi editor
 export EDITOR="nvim"
-
-printf "."
 
 alias b='btop'
 alias c='clear'
@@ -59,7 +55,7 @@ alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
-alias r='clear && printf "rebooting" && source <(tail -n +3 ~/.zshrc)'
+alias r='clear && source <(tail -n +3 ~/.zshrc)'
 # alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
 alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific.
@@ -76,8 +72,8 @@ autoload -U compinit
 zstyle ':completion:*' menu select # Enables interactive selection menu
 zstyle ':completion:*' special-dirs true # includes ./ and ../
 zmodload zsh/complist
-compinit
-printf "."
+compinit -C
+# printf "."
 
 # Enable Ctrl-x-e to edit command line
 autoload -U edit-command-line
@@ -255,8 +251,6 @@ ca() {
 
 # --- ZSH HISTORY
 
-source $(brew --prefix)/opt/fzf/shell/key-bindings.zsh
-
 # https://github.com/junegunn/fzf/issues/1309
 # Remove repeated entries from fzf history search
 fzf-history-widget() {
@@ -276,8 +270,16 @@ fzf-history-widget() {
   return $ret
 }
 
-zle -N fzf-history-widget
-bindkey '^R' fzf-history-widget
+_fzf_lazy_history() {
+  unfunction _fzf_lazy_history
+
+  source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+
+  zle fzf-history-widget
+}
+
+zle -N _fzf_lazy_history
+bindkey '^R' _fzf_lazy_history
 
 : '
 ^r # to use it normally,
