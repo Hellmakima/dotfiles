@@ -19,3 +19,5 @@ keybind = super+alt+h=goto_split:left
 keybind = super+alt+j=goto_split:down
 keybind = super+alt+k=goto_split:up
 keybind = super+alt+l=goto_split:right
+# More shaders at https://github.com/KroneCorylus/ghostty-shader-playground/blob/7295ebf717f236f114912ec5de0d8ce91661448f/public/shaders/cursor_frozen.glsl
+custom-shader = ~/.config/ghostty/shaders/cursor.glsl
