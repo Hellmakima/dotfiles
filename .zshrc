@@ -291,7 +291,7 @@ history -d <line_number> # delete specific line
 # ---
 
 # Colors
-export LS_COLORS="$(vivid generate tokyonight-night)"
+# export LS_COLORS="$(vivid generate tokyonight-night)"
 
 # allow comments in terminal
 setopt interactivecomments
