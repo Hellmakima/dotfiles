@@ -11,3 +11,22 @@ To use different folder (e.g. ~/Projects/dotfiles)
 run `stow -t ~ .` from this folder
 
 For the `.gitignore_global` file to work, use `git config --global core.excludesfile ~/.gitignore_global`
+
+TODO:
+1. Update file structure to
+```
+dotfiles/
+├── home/
+│   ├── .zshrc
+│   └── .config/
+└── etc/
+    └── hosts
+```
+2. install with
+```sh
+#!/bin/sh
+set -e
+
+stow -t "$HOME" home
+sudo stow -t / etc
+```
