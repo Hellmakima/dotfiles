@@ -47,7 +47,6 @@ alias cmd='tldr --list | fzf --preview "tldr {1} --color=always" --preview-windo
 alias cp='cp -i'
 alias gc='cd ~/.config'
 alias gd='cd ~/Downloads'
-alias gh='cd ~'
 alias l="eza -l --icons --group-directories-first"
 alias ls="eza -l --icons --group-directories-first"
 alias ld="lazydocker"
