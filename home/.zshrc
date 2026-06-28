@@ -54,6 +54,7 @@ alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
 alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
+alias op="opencode /Users/apple/open"
 alias r='clear && source <(tail -n +3 ~/.zshrc)'
 # alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
@@ -178,6 +179,15 @@ rr() {
 f(){
     fzf --preview 'bat --style=numbers --color=always --line-range :500 {}' \
         --bind 'ctrl-o:execute(nvim {})+accept'
+}
+
+# Browse web pages
+web() {
+  local url=${1:?usage: web URL}
+  curl -fsSl -- "$url" \
+    | html2markdown \
+    | fmt -w "$(tput cols)" \
+    | bat -l md --style=plain
 }
 
 # --- CONDA
