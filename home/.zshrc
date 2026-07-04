@@ -36,6 +36,7 @@ export HOMEBREW_NO_ENV_HINTS=1
 # Yazi editor
 export EDITOR="nvim"
 
+alias a='opencode run {1}'
 alias b='btop'
 alias c='clear'
 alias cd.='cd ..'
@@ -45,16 +46,16 @@ alias cd-='cd -'
 alias cda='conda deactivate'
 alias cmd='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias cp='cp -i'
+alias g="lazygit"
 alias gc='cd ~/.config'
 alias gd='cd ~/Downloads'
 alias l="eza -l --icons --group-directories-first"
 alias ls="eza -l --icons --group-directories-first"
 alias ld="lazydocker"
-alias lg="lazygit"
 alias ll="eza -la --icons --group-directories-first"
-alias lq='lazysql'
 alias lt="eza --tree --icons --git-ignore"
 alias op="opencode /Users/apple/open"
+alias q='lazysql'
 alias r='clear && source <(tail -n +3 ~/.zshrc)'
 # alias r='source <(head -n $(( $(wc -l < ~/.zshrc) - 2 )) ~/.zshrc)' # skip clear
 alias red='redis-tui'
@@ -62,6 +63,7 @@ alias rm="trash" # to delete permanently, use \rm <file> # trash is MAC specific
 alias sb='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ssh='TERM=xterm-256color ssh'
 alias t="tmux"
+alias ta="t a"
 alias v='nvim'
 alias x='cd && clear'
 
