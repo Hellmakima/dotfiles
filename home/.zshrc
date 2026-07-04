@@ -1,12 +1,5 @@
 printf "~ > "
 
-setopt INC_APPEND_HISTORY
-setopt HIST_IGNORE_DUPS
-setopt EXTENDED_HISTORY
-HISTFILE=~/.zsh_history
-SAVEHIST=10000
-HISTSIZE=10000
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 # __conda_setup="$('/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -301,6 +294,20 @@ history -d <line_number> # delete specific line
 
 # ---
 
+# History
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt EXTENDED_HISTORY
+HISTFILE=~/.zsh_history
+SAVEHIST=10000
+HISTSIZE=10000
+
+# zshell suggestion
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
+# ---
 # Colors
 # export LS_COLORS="$(vivid generate tokyonight-night)"
 
