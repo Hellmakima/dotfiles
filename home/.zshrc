@@ -29,6 +29,7 @@ export HOMEBREW_NO_ENV_HINTS=1
 # Yazi editor
 export EDITOR="nvim"
 
+o() { opencode run "$*"; }
 alias a='opencode run {1}'
 alias b='btop'
 alias c='clear'
