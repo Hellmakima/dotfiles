@@ -5,9 +5,5 @@ install with
 chmod +x ./install.sh
 ./install.sh
 ```
-```
-```
-```
 
 For the `.gitignore_global` file to work, use `git config --global core.excludesfile ~/.gitignore_global`
-

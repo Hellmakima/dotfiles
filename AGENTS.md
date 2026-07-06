@@ -11,15 +11,25 @@ chmod +x ./install.sh
 
 `home/` is `stow -t "$HOME" home`, `etc/` is `sudo stow -t /etc etc`.
 
+## Adding configs
+
+**All configs live under `home/` in the repo** (e.g. `home/.config/tmux/tmux.conf`, `home/.aerospace.toml`), never directly at `~`. To add a new config:
+
+1. Place the file at the correct path inside `home/`
+2. `stow -t "$HOME" home` from the repo root
+3. If the target exists already, back it up first (`mv ~/.path ~/.path.bak`) so stow can create the symlink
+
+After editing configs in the repo, re-run `install.sh` (or `stow -t "$HOME" home`) to refresh symlinks.
+
 ## Tools configured
 
 | Tool | Notes |
 |---|---|
 | zsh | starship (minimal prompt), zoxide, zsh-autosuggestions, zsh-syntax-highlighting, fzf |
 | nvim | LazyVim, launched via `v` |
-| tmux | Prefix is backtick (`` ` ``), not C-b. Alt+hjkl pane nav, M-Left/Right window nav |
+| tmux | Prefix is backtick (`` ` ``), not C-b. `` ` ``+h/j/k/l pane nav, `` ` ``+Enter vertical split, `` ` ``+s horizontal split, `` ` ``+Space cycle layout, `` ` ``+S-q kill session, M-Left/Right window nav |
 | Ghostty | JetBrains Mono 24, 0.7 opacity, custom cursor.glsl shader, undecorated, Super+Alt+hjkl split nav |
-| AeroSpace | Tiling WM, zero gaps, Alt+hjkl focus/move, Alt+1-9/A-Z workspaces, `start-at-login = false` |
+| AeroSpace | Tiling WM, zero gaps, Alt+1-9/A-Z workspaces, `start-at-login = false` |
 | yazi | File manager with relative-motions, bookmarks, clipboard, zoom, zip plugins |
 | btop | Tokyo Night, cpu+proc only, vim keys, transparent bg |
 

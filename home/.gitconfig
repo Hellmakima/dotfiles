@@ -1,0 +1,12 @@
+[core]
+	autocrlf = input
+	excludesfile = /Users/apple/.gitignore_global
+[user]
+	name = Sufiyan Attar
+	email = sufiyanhattar@gmail.com
+[init]
+	defaultBranch = master
+[color "diff"]
+	whitespace = red reverse
+[diff]
+	wsErrorHighlight = all
