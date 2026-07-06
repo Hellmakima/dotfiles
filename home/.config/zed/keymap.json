@@ -13,9 +13,16 @@
     },
   },
   {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "cmd-r": "projects::OpenRecent"
+    },
+  },
+  {
     "context": "Editor && vim_mode == insert",
     "bindings": {
       // "j k": "vim::NormalBefore"
+      "cmd-r": "projects::OpenRecent"
     },
   },
   {

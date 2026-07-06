@@ -306,6 +306,20 @@ HISTSIZE=10000
 # zshell suggestion
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Cmd+Right: accept one word from suggestion, or end-of-line
+_forward_word() {
+  if [[ -n "$POSTDISPLAY" ]] && (( CURSOR == $#BUFFER )); then
+    BUFFER="$BUFFER$POSTDISPLAY"
+    zle .forward-word
+    POSTDISPLAY="${BUFFER[CURSOR+1,$#BUFFER]}"
+    BUFFER="${BUFFER[1,CURSOR]}"
+  else
+    zle .end-of-line
+  fi
+}
+zle -N _forward_word
+bindkey '^E' _forward_word
+
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 # ---
