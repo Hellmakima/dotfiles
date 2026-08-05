@@ -1,5 +1,7 @@
 alias v="nvim"
 
+export PATH="$HOME/.cargo/bin:$PATH"
+
 export LS_COLORS="$(vivid generate molokai)"
 
 alias d="yazi"
@@ -12,3 +14,9 @@ alias c="clear"
 alias x="cd ~ && clear"
 alias xx="exit"
 alias r="source ~/.bashrc"
+
+hi() {
+  echo "Hello 🤗"
+}
+
+eval "$(zoxide init --cmd cd bash)"
