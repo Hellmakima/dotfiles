@@ -1,0 +1,6 @@
+keymap	H	BACK
+keymap	L	NEXT
+keymap	u	PREV_HALF_PAGE
+keymap	d	NEXT_HALF_PAGE
+keymap	SPC	NEXT_PAGE
+keymap	t	NEW_TAB
