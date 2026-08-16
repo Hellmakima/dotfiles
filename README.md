@@ -4,8 +4,8 @@
 
 ```sh
 cd apple
-chmod +x ./install.sh
-./install.sh
+stow -t "$HOME" home
+sudo stow -t /etc etc
 ```
 
 ## Android
