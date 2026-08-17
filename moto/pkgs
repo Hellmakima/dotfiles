@@ -1,0 +1,32 @@
+termux-change-repo -> choose single mirror cloudflared
+pkg update && pkg upgrade
+
+Install:
+exiftool
+eza
+fastfetch
+ffmpeg
+file
+fzf
+git
+lazygit
+neovim
+openssh
+rust
+rust-analyzer
+stow
+tmux
+uv
+vivid
+w3m
+wget
+which
+yazi
+zoxide
+
+set up git ssh key
+set up git global configs
+clone dotfiles and stow
+
+set up
+https://github.com/Hope2333/opencode-termux/releases
