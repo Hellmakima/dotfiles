@@ -1,3 +1,5 @@
 **/.DS_Store
 **/yazi/vfs.toml
 **/zed/prompts
+/moto/.config/termai/config.json
+/moto/.w3m/history
