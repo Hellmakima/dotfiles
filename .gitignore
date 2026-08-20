@@ -3,3 +3,4 @@
 **/zed/prompts
 /moto/.config/termai/config.json
 /moto/.w3m/history
+/moto/.config/nvim/lazy-lock.json

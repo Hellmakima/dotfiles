@@ -6,3 +6,5 @@
 -- vim.api.nvim_create_user_command("v", "normal! v", {})
 
 vim.keymap.set("n", ";", ":", { desc = "Command line" })
+vim.keymap.set("n", "W", ":w<CR>", { desc = "write"})
+vim.keymap.set("i", "jk", "<ESC>", { desc = "write"})
