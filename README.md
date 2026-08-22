@@ -12,7 +12,8 @@ sudo stow -t /etc etc
 install with
 ```sh
 cd moto
-stow -t ~ .
+stow -t ~ home
+stow -t ~/../usr/bin/ bin
 ```
 
 For the `.gitignore_global` file to work, use `git config --global core.excludesfile ~/.gitignore_global`

@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+from os import system
+from datetime import datetime, date
+
+# system("echo hi")
+FILE = "/storage/emulated/0/Documents/files/note.md"
+time = datetime.strftime(datetime.now(), "YYYY-MM-DD")
+today = date.today().strftime("%Y-%m-%d")
+system(f'vim +6 -c "normal! i\n[{today}]\n" -c "normal! k" {FILE}')
