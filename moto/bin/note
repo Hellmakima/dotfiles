@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+from subprocess import getoutput
+from datetime import datetime, date
+
+# system("echo hi")
+FILE = "/storage/emulated/0/Documents/files/note.md"
+time = datetime.strftime(datetime.now(), "YYYY-MM-DD")
+today = date.today().strftime("%Y-%m-%d")
+getoutput(rf"sed -i '6a\[{today}]\n\n' {FILE}")
+getoutput(f"am start -a android.intent.action.VIEW -d obsidian://open?vault=files&file=note")
