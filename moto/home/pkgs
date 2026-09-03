@@ -6,6 +6,7 @@ ln -s /storage/emulated/0/Documents/ ~/storage/documents
 ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/whatsapp
 
 Install:
+apksigner
 exiftool
 eza
 fastfetch
@@ -15,6 +16,7 @@ fzf
 git
 lazygit
 neovim
+openjdk-xx
 openssh
 rust
 rust-analyzer

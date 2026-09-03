@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from subprocess import getoutput
-getoutput(f"am start -a android.intent.action.VIEW -d obsidian://open?vault=files&file=note")
+getoutput(f"am start -a android.intent.action.VIEW -d 'obsidian://open?vault=files&file=note.md'")
 from datetime import datetime, date
 
 # system("echo hi")

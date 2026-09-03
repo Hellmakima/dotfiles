@@ -1,4 +1,5 @@
 alias v="nvim"
+alias w="w3m"
 
 export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -24,6 +25,10 @@ alias r="source ~/.bashrc"
 alias rc="v ~/.bashrc"
 
 tmp="$PREFIX/tmp"
+
+duck() {
+  w3m "https://lite.duckduckgo.com/lite/?q=$(printf '%s' "$*" | sed 's/ /+/g')"
+}
 
 hi() {
   echo "Hello 🤗"
