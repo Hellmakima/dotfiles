@@ -15,5 +15,6 @@ cd moto
 stow -t ~ home
 stow -t ~/../usr/bin/ bin
 ```
+for a new setup see `moto/seed`
 
 For the `.gitignore_global` file to work, use `git config --global core.excludesfile ~/.gitignore_global`

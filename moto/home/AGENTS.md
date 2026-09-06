@@ -3,43 +3,97 @@
 You are working on Sufiyan's phone. This is **Termux on Android (aarch64)**, NOT macOS.
 `$HOME` is `/data/data/com.termux/files/home`, packages live under `$PREFIX=/data/data/com.termux/files/usr`.
 Package manager is `pkg`/`apt` (Termux repos, glibc repo enabled). There is **no brew, no sudo, no conda** here.
-Anything the dotfiles describe for "apple" (zsh, starship, Homebrew, OpenJDK, Ghostty, AeroSpace) targets the macOS machine — do not assume those exist here.
-
-## Projects
-
-### `~/dotfiles` — git repo `hellmakima/dotfiles`
-Two machines, one repo. **Configs live inside subdirs, never at the repo root.**
-- `apple/` — macOS: `apple/install.sh` does `stow -t "$HOME" home` then `sudo stow -t /etc etc`. Run from `~/dotfiles`.
-- `moto/` — **this phone**: configs to `stow -t $HOME` directly (currently only `moto/.tmux.conf`). New/untracked; the apple→moto restructure is in-progress (renames staged).
-- The existing `~/dotfiles/AGENTS.md` describes the old `home/`+`etc/` layout and is stale — trust `apple/`+`moto/` over it.
-- `home/`, `etc/`, `install.sh` at repo root no longer exist (moved under `apple/`).
-
-### `~/tasks` — git repo `hellmakima/tasks`, Python task toolkit
-- `uv`-managed. Venv at `~/.venv` is **Python 3.14.6** (system python) despite `.python-version` saying 3.10 — that file is stale, don't rely on it.
-- Tests: `uv run pytest test.py` (verbose: `uv run pytest -svv test.py`).
-- FastAPI app: `app.py` (APScheduler background job, `POST /sync`). TUI/CLI: `cli/cli.py` (typer + questionary). Models: `models.py`, recurrence logic: `utils.py`.
-- SQLite DB `database.db` is gitignored; `import_tasks.py` imports from `Tasks.json`.
-- Upstream plan: `plan.md`, `todo.md` (ntfy phone notifs, optional Rust/ratatui rewrite).
-
-### `~/files` → `/storage/emulated/0/Documents/files` — git repo `hellmakima/files`
-Obsidian notes vault + git repo on **Android shared storage** (files owned by `root`, hence `git config --global safe.directory /storage/emulated/0/Documents/files` is set).
-Contains `ENVs.md`, `.env.sh` (sourced by the macOS `ca()` function), other scratch markdown.
-Android/FUSE storage is slow — avoid heavy git operations on it.
-
-### Scratch — NOT projects, ignore
-`~/a` (stray copy of tasks/utils.py), `~/typescript` (stray `script` session log), `~/tmp/hdfc.md` (empty scratch file).
+The user likes minimal packages. Ask before any install you wish to make. anytime u make a change that is some manual set up update `~/seed`
+All the dot files live in `~/dots`. It has dotfiles for other machines as well, do not touch those, it is used with stow and git.
+Obsidian vault located at `/storage/emulated/0/Documents/files`.
+All simple python scripts located in `~/dots/moto/bin`
 
 ## This phone's setup
 
-- Shell: bash. Aliases in `~/.bashrc`: `v`=nvim, `d`=yazi, `l`=eza, `op`=opencode, `g`=lazygit, `t`=tmux (attach-or-new), `c`=clear, `x`=cd ~ + clear, `xx`=exit, `r`=re-source.
-- **tmux prefix is backtick (`` ` ``), not C-b** (same on apple). `moto/.tmux.conf` is the canonical phone config; tpm + catppuccin plugins live in `~/.tmux/plugins/` (not in git).
+- tmux prefix is backtick (`` ` ``), `moto/.tmux.conf` is the canonical phone config; tpm + catppuccin plugins live in `~/.tmux/plugins/` (not in git).
+- user likes transparent theme or tokyo-night, catppuccin
 - nvim is **LazyVim** at `~/.config/nvim` (mirrors the copy in `dotfiles/apple/home/.config/nvim/`).
 - Android storage is reachable via `~/storage/{shared,downloads,dcim,pictures,music,movies}` symlinks.
 - `termux-api` package is installed (`termux-*` / `am` tools work); extra-keys/colors configured in `~/.termux/`.
 
 ## Tooling available
-`uv` 0.11, node 24/npm, rust + clang (aarch64-android target), nvim 0.12, tmux 3.7, yazi, eza, fd, fzf, ripgrep, lazygit, zoxide, vivid, tealdeer, jq, imagemagick, ffmpeg, stow, opencode 1.18.3 (installed via pkg, local). `opencode` config: `~/.config/opencode/opencode.jsonc` (minimal) + npm plugin `@opencode-ai/plugin`.
+`uv` 0.11, rust + clang (aarch64-android target), nvim 0.12, tmux 3.7, yazi, eza, fd, fzf, ripgrep, lazygit, zoxide, vivid, tealdeer, jq, imagemagick, ffmpeg, stow, opencode 1.18.3 (installed via pkg, local). `opencode` config: `~/.config/opencode/opencode.jsonc` (minimal) + npm plugin `@opencode-ai/plugin`.
 
 ## General
 - Git identity: Sufiyan Attar / sufiyanhattar@gmail.com; remotes are `git@github.com:hellmakima/*`.
 - Commands must run on aarch64-android — avoid macOS/Linux-distro-specific invocations.
+- **No `/tmp` on Android/Termux.** Use `$PREFIX/tmp` (i.e. `/data/data/com.termux/files/usr/tmp`) for temp files; opencode's temp sandbox is `/data/data/com.termux/files/usr/tmp/opencode`. `$HOME/.bashrc` sets `tmp="$PREFIX/tmp"`.
+
+structure of `~/dots/moto/`
+
+moto
+├── .stow-local-ignore
+├── a
+├── bin
+│   ├── blast
+│   ├── note
+│   └── notev
+└── home
+    ├── .bashrc
+    ├── .config
+    │   ├── lazygit
+    │   │   └── config.yml
+    │   ├── mpv
+    │   ├── nvim
+    │   │   ├── .gitignore
+    │   │   ├── .neoconf.json
+    │   │   ├── init.lua
+    │   │   ├── lazy-lock.json
+    │   │   ├── lazyvim.json
+    │   │   ├── LICENSE
+    │   │   ├── lua
+    │   │   ├── README.md
+    │   │   └── stylua.toml
+    │   ├── opencode
+    │   │   ├── .gitignore
+    │   │   ├── node_modules
+    │   │   ├── opencode.jsonc
+    │   │   ├── package-lock.json
+    │   │   ├── package.json
+    │   │   └── tui.json
+    │   ├── termai
+    │   │   └── config.json
+    │   └── yazi
+    │       ├── init.lua
+    │       ├── keymap.toml
+    │       ├── package.toml
+    │       └── plugins
+    ├── .hushlogin
+    ├── .termux
+    │   ├── colors.properties
+    │   ├── font.ttf
+    │   ├── font.ttf.bak
+    │   └── termux.properties
+    ├── .tmux
+    │   ├── .tmux.conf
+    │   └── plugins
+    │       ├── tmux-continuum
+    │       ├── tmux-floax
+    │       ├── tmux-resurrect
+    │       ├── tmux-sensible
+    │       ├── tpm
+    │       └── vim-tmux-navigator
+    ├── .tmux.conf
+    ├── .w3m
+    │   ├── config
+    │   ├── cookie
+    │   ├── history
+    │   └── keymap
+    ├── AGENTS.md
+    └── seed
+
+Behavior
+Analyse my question to see if it is a casual question or you need to dive deep. You can answer in one sentence for a casual question.
+Don't announce what you're about to say (eg, here's an overview....) Just say the thing.
+Don't agree with me unless it's actually correct. Challenge my assumptions and offer better alternatives. Dont be delusional 
+Respond in minimal number of words possible unless told to explain.
+We strictly follow Islam.
+Speak formally a little like Gen Z.
+Don't use non-ASCII characters in code.
+ Tell it like it is; don't sugar-coat responses.
+Use short declarative sentences.

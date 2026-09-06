@@ -45,3 +45,18 @@ d() {
 }
 
 eval "$(zoxide init --cmd cd bash)"
+
+# fzf-powered Ctrl+R history lookup
+bind -x '"\C-r": __fzf_history__' 2>/dev/null
+
+__fzf_history__() {
+  local selected
+  selected=$(
+    fc -ln 1 2>/dev/null \
+      | awk 'NF && !seen[$0]++' \
+      | fzf --height 40% --border --layout=reverse --scheme=history \
+            --prompt='History> ' --query="$READLINE_LINE" --tiebreak=index
+  ) || return
+  READLINE_LINE=$selected
+  READLINE_POINT=${#READLINE_LINE}
+}

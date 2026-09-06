@@ -2,6 +2,7 @@ termux-change-repo -> choose single mirror cloudflared
 pkg update && pkg upgrade
 
 termux-setup-storate
+ln -s /storage/emulated/0/ ~/storage/0
 ln -s /storage/emulated/0/Documents/ ~/storage/documents
 ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/whatsapp
 
@@ -15,6 +16,7 @@ file
 fzf
 git
 lazygit
+mandocs
 neovim
 openjdk-xx
 openssh
