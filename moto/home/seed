@@ -47,3 +47,18 @@ https://github.com/esriaksoyeb/termai
      site-packages/termai_pkg/__init__.py"
 ```
 in tmux, press `I and `q
+
+for pydantic on py3.14
+uv init repro && cd repro
+1. Pin the pairing in pyproject.toml:
+  [project]
+  dependencies = ["pydantic>=2.12,<2.13"]
+
+  [tool.uv]
+  extra-index-url = ["https://termux-user-repository.github.io/pypi/"]
+  index-strategy = "unsafe-first-match"
+2. Re-resolve from scratch:
+  rm -f uv.lock
+  uv sync
+3. Verify:
+  uv run python -c "import pydantic, pydantic_core; print(pydantic.__version__, pydantic_core.__version__)"

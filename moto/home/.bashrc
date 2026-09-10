@@ -46,6 +46,20 @@ d() {
 
 eval "$(zoxide init --cmd cd bash)"
 
+# fzf-powered command palette on Ctrl+^
+bind -x '"\C-@": __command_palette__' 2>/dev/null
+
+__command_palette__() {
+  local cmd
+  cmd=$(
+    compgen -ac | sort -u \
+      | rg -v '^(_|[. ])' \
+      | fzf --height 60% --border --layout=reverse --prompt='Run> '
+  ) || return
+  READLINE_LINE=$cmd
+  READLINE_POINT=${#READLINE_LINE}
+}
+
 # fzf-powered Ctrl+R history lookup
 bind -x '"\C-r": __fzf_history__' 2>/dev/null
 

@@ -7,5 +7,6 @@
 
 vim.keymap.set("n", ";", ":", { desc = "Command line" })
 vim.keymap.set("n", "ww", "<cmd>w<cr>", { desc = "write" })
+vim.keymap.set("n", "wq", "<cmd>wq<cr>", { desc = "write and quit" })
 vim.keymap.set({"n", "v"}, "q", "<cmd>q<cr>", { desc = "quit" })
 vim.keymap.set({"i", "v"}, "jk", "<ESC>", { desc = "write"})
