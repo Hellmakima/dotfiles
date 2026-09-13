@@ -1,0 +1,39 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   cleanup.css — small, safe visual-noise removals.
+
+   IMPORTANT: nothing that carries functionality is hidden here.
+   The bulk of the "clean" look comes for free from Firefox's own
+   native behavior with vertical tabs on:
+     - #TabsToolbar is empty, so it collapses to zero height
+     - the menu bar auto-hides (Alt to show)
+     - the collapsed rail shows icons only
+     - the vertical tab list already uses a thin scrollbar
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Window-layout separator
+   ------------------------------------------------------------
+   With vertical tabs the nav-bar no longer sits below a tab strip,
+   so Firefox already suppresses its top border
+   (#navigator-toolbox[tabs-hidden]). We just make sure no stray
+   box-shadow/frame draws around the toolbox on Linux. */
+#navigator-toolbox {
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------
+   Bookmarks toolbar
+   ------------------------------------------------------------
+   Firefox already renders it at zero height when it contains no
+   visible bookmarks, so a user with a filled bar keeps their bar;
+   we deliberately do NOT force it hidden.
+
+   Deliberately NOT hidden (why):
+     * #sidebar-button        - one-click access to the sidebar
+     * back/forward, reload   - core navigation
+     * #urlbar identity block - security indicators
+     * extension buttons      - the user installed them on purpose
+     * titlebar buttons       - window management
+   ============================================================ */

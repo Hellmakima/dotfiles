@@ -1,0 +1,21 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   Entry point. This file is loaded by Firefox 154 from the
+   profile's chrome/ directory at startup, provided the pref
+   toolkit.legacyUserProfileCustomizations.stylesheets is true
+   (it already is in this profile; user.js pins it too).
+
+   It only imports the css/* modules so the theme stays
+   maintainable and diffable. Loading order matters:
+   variables first, cleanup last.
+
+   Editing: change design constants in css/variables.css only.
+   ============================================================ */
+
+@import url("css/variables.css");
+@import url("css/sidebar.css");
+@import url("css/tabs.css");
+@import url("css/toolbar.css");
+@import url("css/cleanup.css");
+@import url("css/cleanmode.css");

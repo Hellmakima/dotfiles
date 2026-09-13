@@ -1,0 +1,85 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   variables.css — the only file you need to edit to tune the
+   look. Every other css/* file reads these tokens and nothing
+   else, so the whole theme is configured in one place.
+
+   All values were checked against Firefox 154.0's own chrome
+   source (themes/browser-skin). Nothing here depends on any
+   extension or on about:config hacks.
+   ============================================================ */
+
+:root {
+  /* ----------------------------------------------------------
+     Sidebar
+     ---------------------------------------------------------- */
+  /* Width of the expanded (pop-out) tabs panel, in px. Firefox's
+     default compact value is 240px; Zen is ~260-280px. */
+  --zen-sidebar-width: 260px;
+
+  /* Horizontal padding, per side, of the collapsed icon rail.
+     Rail width = icon size + 2 x this padding. The rail icons take
+     their size from --zen-tab-height, so the rail ends up
+     32 + 8 + 8 = 48px, which matches Zen's rail. */
+  --zen-rail-button-padding: 8px;
+
+  /* ----------------------------------------------------------
+     Vertical tabs
+     ---------------------------------------------------------- */
+  /* Height of the tab pill. Native vertical-tab default is 32px;
+     32px keeps the collapsed-rail icons nicely sized too. */
+  --zen-tab-height: 32px;
+
+  /* Tab pill corner radius (Firefox default is 8px; Zen is ~10px). */
+  --zen-tab-radius: 10px;
+
+  /* Vertical gap above and below every tab pill, in px. */
+  --zen-tab-gap-block: 2px;
+
+  /* Horizontal distance between the tab pill and the rail/panel
+     edge, in px (Firefox compact default is 7px). */
+  --zen-tab-margin-inline: 7px;
+
+  /* Horizontal padding inside the tab pill, in px. */
+  --zen-tab-inline-padding: 10px;
+
+  /* ----------------------------------------------------------
+     Toolbar / address bar
+     ---------------------------------------------------------- */
+  /* Navigation bar height in px. */
+  --zen-toolbar-height: 32px;
+
+  /* Address-bar field height in px. */
+  --zen-urlbar-height: 26px;
+
+  /* ----------------------------------------------------------
+     Colors
+     ---------------------------------------------------------- */
+  /* Navigation/toolbox background. transparent makes the floating
+     toolbar (clean mode) blend with the page. The URL bar field
+     keeps its own background, so it stays readable. */
+  --zen-toolbar-bg: transparent;
+
+  /* Active-tab background: a 20%-opacity overlay (dark in light
+     themes, light in dark themes) so the page/rail shows through —
+     no solid grey block. The outline alpha below keeps it visible. */
+  --zen-tab-selected-bg: light-dark(
+    color-mix(in srgb, #141414 20%, transparent),
+    color-mix(in srgb, #f5f5f7 20%, transparent)
+  );
+
+  /* Hover background for inactive tabs. */
+  --zen-tab-hover-bg: light-dark(
+    color-mix(in srgb, #1a1a1a 6%, #ffffff),
+    color-mix(in srgb, #fdfdfe 7%, #2a2a2f)
+  );
+
+  /* Text color on the active tab. */
+  --zen-tab-selected-text: light-dark(#141414, #f5f5f7);
+
+  /* Contrast of the hairline drawn around the selected tab pill.
+     Higher = more visible active tab (good on low-contrast themes);
+     set to 0% to disable. */
+  --zen-tab-selected-outline-alpha: 22%;
+}

@@ -1,0 +1,107 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   cleanmode.css — the "Zen compact" overlay: the nav-bar and the
+   vertical-tabs rail are removed from the layout entirely and
+   only float back in while you hover near the top / left edge.
+
+   ON by default (user.js pins useroverrides.cleanMode=true).
+   To turn it off: about:config -> useroverrides.cleanMode = false
+   -> restart. Nothing else to undo.
+
+   How it works (all of this reuses mechanisms Firefox already
+   ships, so it degrades gracefully):
+     * at rest, the toolbox is an overlay pushed out of view by
+       translate; a 3px strip of its bottom edge stays on-screen
+       and acts as the hover "catch". Hovering it — or focusing
+       anything inside it (e.g. Ctrl+L, the URL bar) — slides it
+       back in. Leaving the mouse and blurring hides it again.
+     * Firefox's own fullscreen toggle (F11) already auto-hides
+       the whole chrome with a hover reveal; we do NOT restyle
+       fullscreen and let that native code win, so the two modes
+       compliment instead of fighting.
+   ============================================================ */
+
+@media -moz-pref("useroverrides.cleanMode") {
+
+  /* ------------------------------------------------------------
+     Nav-bar: hidden by default, floats in on top hover / focus.
+     ------------------------------------------------------------
+     -100% of its own height fully hides it; +8px leaves a thin band
+     that catches hover at the top edge (the tab box normally paints
+     ABOVE the toolbox, so the catch must beat the tab box's z-index
+     too: --browser-area-z-index-toolbox is 0, tabbox is 2).
+     position:fixed removes it from the layout, so the page reclaims
+     the bar's space with no dead gap. */
+  :root:not([inFullscreen]) #navigator-toolbox {
+    position: fixed !important;
+    inset-inline: 0 !important;
+    top: 0 !important;
+    z-index: calc(var(--browser-area-z-index-sidebar-expand-on-hover) + 1) !important;
+    transform: translateY(calc(-100% + 8px)) !important;
+    opacity: 0 !important;
+    transition: transform 200ms ease, opacity 160ms ease !important;
+  }
+
+  /* Keep it visible while it is hovered, in use, or in fullscreen
+     (fullscreen keeps its own native hover/reveal behavior). */
+  :root:not([inFullscreen]) #navigator-toolbox:hover,
+  :root:not([inFullscreen]) #navigator-toolbox:focus-within {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+  }
+
+  /* ------------------------------------------------------------
+     Tabs rail: hidden by default, floats in on left-edge hover.
+     VERTICAL TABS ONLY — with horizontal tabs the sidebar is a plain
+     web sidebar and must not be turned into a floating rail, so this
+     whole block only applies while sidebar.verticalTabs is on.
+     ------------------------------------------------------------
+     The rail already behaves as a floating overlay when expanded in
+     Firefox's native expand-on-hover mode; here we make the whole
+     rail float at all times (Zen-style) and give it an 8px hover
+     catch on its right edge, mirrored on the current side. */
+  @media -moz-pref("sidebar.verticalTabs") {
+
+    :root:not([inFullscreen]) #sidebar-container {
+      position: absolute !important;
+      inset-block: 0 !important;
+      inset-inline-start: 0 !important;
+      inset-inline-end: unset !important;
+      width: 48px !important;
+      z-index: var(--browser-area-z-index-sidebar-expand-on-hover) !important;
+      transform: translateX(calc(-100% + 8px)) !important;
+      transition: transform 200ms ease !important;
+      background-color: var(--toolbox-background-color);
+    }
+
+    :root:not([inFullscreen]) #sidebar-container:hover,
+    :root:not([inFullscreen]) #sidebar-container:focus-within {
+      transform: translateX(0) !important;
+    }
+
+    /* Resize grip: with a floating rail the splitter makes no sense
+       (dragging it would fight the overlay), so drop it. */
+    :root:not([inFullscreen]) #sidebar-launcher-splitter {
+      display: none !important;
+    }
+
+    /* The tab box must always use the full window width: native
+       expand-on-hover shifts it aside when the rail expands so the
+       rail does not cover content — with a floating rail we WANT the
+       overlay, so pin the offset to zero in every state/attribute
+       combination (native sets an inline margin during animations). */
+    :root:not([inFullscreen]) #tabbrowser-tabbox {
+      margin-inline-start: 0 !important;
+      margin-inline-end: 0 !important;
+    }
+
+    /* When the sidebar (web panels, Ctrl+B / Ctrl+I etc.) is open it
+       sits in the layout right of the rail; keep it flush to the
+       window edge just like the tab box so nothing shifts oddly. */
+    :root:not([inFullscreen]) #sidebar-box {
+      margin-inline-start: 0 !important;
+      margin-inline-end: 0 !important;
+    }
+  }
+}

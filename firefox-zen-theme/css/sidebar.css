@@ -1,0 +1,54 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   sidebar.css — collapsed rail and expanded panel dimensions.
+
+   All selectors/variables below were verified against the
+   actual sidebar chrome that ships in Firefox 154.0
+   (browser/skin/classic/browser/sidebar.css and the
+   sidebar-main/sidebar-tab-* content CSS).
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Collapsed rail width
+   ------------------------------------------------------------
+   Firefox sizes each rail icon with --button-size-icon, which in
+   vertical-tabs mode is set to --tab-min-height (== --zen-tab-height,
+   see tabs.css), and pads it in-flow with
+   --sidebar-launcher-button-padding-inline. So:
+       rail width = --zen-tab-height + 2 * padding   = 48px
+   The measured value Firefox then reports back through
+   --sidebar-launcher-collapsed-width (used to reserve the rail for
+   the page), so content alignment stays exact automatically. */
+:root {
+  --sidebar-launcher-button-padding-inline: var(--zen-rail-button-padding);
+
+  /* Inset of the tab pills from the rail/panel edge. Native compact
+     value is 7px; keep it on the Zen tokens. */
+  --tab-inner-inline-margin: var(--zen-tab-margin-inline);
+}
+
+/* ------------------------------------------------------------
+   Expanded panel width
+   ------------------------------------------------------------
+   When the sidebar pops out (expand-on-hover) or is docked,
+   the launcher/panel width is driven by
+   --sidebar-expanded-launcher-width. Point it at the Zen token.
+   Firefox's default compact fallback is 240px. */
+:root {
+  --sidebar-expanded-launcher-width: var(--zen-sidebar-width);
+}
+
+/* ------------------------------------------------------------
+   Expand-on-hover polish
+   ------------------------------------------------------------
+   In expand-on-hover mode the launcher becomes an overlay that
+   slides over the page (position:absolute), which is exactly Zen's
+   behavior - no CSS needed there. We only make sure the overlay
+   surface carries the toolbar background so it reads as one panel
+   in both light and dark, without fighting AMO theme colors. */
+:root[sidebar-expand-on-hover] #sidebar-container {
+  /* Keep the native --toolbox-background-color the window already
+     uses; this just guarantees an opaque surface for the overlay. */
+  background-color: var(--toolbox-background-color);
+}

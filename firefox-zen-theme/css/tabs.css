@@ -1,0 +1,79 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   tabs.css — vertical tab pill geometry + colors.
+
+   Every selector and custom property below was verified against
+   Firefox 154.0's tab chrome
+   (browser/skin/classic/browser/tabbrowser/{tabs,tab.tokens}.css).
+   The horizontal tab bar is NOT styled here: with native vertical
+   tabs enabled Firefox already empties and hides #TabsToolbar.
+
+   NOTE ON FRAGILITY (see README "Maintenance"): the block of
+   --tab-* custom properties is the most update-sensitive part of
+   this theme because Mozilla owns these tokens. They are mapped
+   1:1 to --zen-* tokens so that, if a token is renamed upstream,
+   only this mapping block needs updating - the design constants
+   live in variables.css untouched.
+   ============================================================ */
+
+:root {
+  /* ---- Geometry -------------------------------------------------- */
+  /* Tab pill height. Also sizes the collapsed-rail icons (native
+     wiring: --button-size-icon = var(--tab-min-height)). */
+  --tab-min-height: var(--zen-tab-height);
+
+  /* Pill corner radius. Native token; inherits from
+     --toolbarbutton-border-radius (8px) by default. */
+  --tab-border-radius: var(--zen-tab-radius);
+
+  /* Vertical gap around each tab pill. */
+  --tab-margin-block: var(--zen-tab-gap-block);
+  --tab-vertical-block-margin: var(--zen-tab-gap-block);
+
+  /* Horizontal padding inside the tab pill. */
+  --tab-inline-padding: var(--zen-tab-inline-padding);
+  --tab-vertical-inline-padding: var(--zen-tab-inline-padding);
+
+  /* ---- Flat, Zen-like active tab --------------------------------- */
+  /* Drop the default drop-shadow on the selected pill. Default is
+     --box-shadow-level-1 (a soft shadow); Zen uses none. */
+  --tab-box-shadow-selected: none;
+
+  /* Colors (tokens -> Zen palette). */
+  --tab-background-color-selected: var(--zen-tab-selected-bg);
+  --tab-background-color-hover: var(--zen-tab-hover-bg);
+  --tab-selected-textcolor: var(--zen-tab-selected-text);
+}
+
+/* ------------------------------------------------------------
+   Active-tab outline
+   ------------------------------------------------------------
+   The tokens above give the selected tab its fill. With the
+   shadow removed we get a quiet elevated chip like Zen; a hairline
+   currentColor outline keeps the active tab unambiguous even on
+   low-contrast themes and in forced-colors mode (accessibility).
+   This mirrors the native focus outline style used by Electron- and
+   browser-class UIs and costs nothing to maintain. */
+.tabbrowser-tab[selected] > .tab-stack > .tab-background {
+  outline-width: 1px;
+  outline-offset: -1px;
+  outline-color: color-mix(in srgb, currentColor var(--zen-tab-selected-outline-alpha), transparent);
+}
+
+/* ------------------------------------------------------------
+   Pinned tabs (vertical / expanded)
+   ------------------------------------------------------------
+   Native handles the pinned-tab grid, row height and hover states.
+   We only soften the pinned hover chip to match the main list.
+   Selectors verified against the #pinned-tabs-container rules in
+   Firefox 154.0's tabs.css. */
+#pinned-tabs-container .tabbrowser-tab:hover > .tab-stack > .tab-background:not([selected]) {
+  background-color: var(--zen-tab-hover-bg);
+}
+
+/* ------------------------------------------------------------
+   Scrollbar in the vertical tab list
+   ------------------------------------------------------------
+   Native already applies scrollbar-width: thin here; nothing to do.
+   Kept as a deliberate comment so nobody re-adds heavy scrollbar CSS. */

@@ -1,0 +1,62 @@
+/* ============================================================
+   ZEN-INSPIRED FIREFOX
+   ------------------------------------------------------------
+   toolbar.css — compact address bar and navigation bar.
+
+   This preserves the user's pre-existing "shrink the navbar"
+   customization (backup/userChrome.css.original) but expresses it
+   through the --zen-* tokens so it is tunable. Selectors were
+   verified against Firefox 154.0 (browser-shared.css: #nav-bar,
+   and the urlbar container tokens). Nothing functional is removed.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Toolbox + toolbars: transparent chrome
+   ------------------------------------------------------------
+   The grey toolbar comes from Firefox's own --toolbox-background-color
+   / --toolbar-background-color (light grey in light themes, dark grey
+   in dark). Override the whole toolbox and its bars to the --zen-toolbar-bg
+   token (default transparent) so nothing grey survives. The URL bar
+   field, menus and icons keep their own backgrounds. */
+#navigator-toolbox,
+#nav-bar,
+#TabsToolbar,
+#toolbar-menubar {
+  background-color: var(--zen-toolbar-bg) !important;
+  background-image: none !important;
+}
+
+/* ------------------------------------------------------------
+   Navigation bar
+   ------------------------------------------------------------ */
+#nav-bar {
+  min-height: var(--zen-toolbar-height);
+  max-height: var(--zen-toolbar-height);
+  padding-block: 0;
+
+  /* Tighten icon padding inside the bar so it feels like Zen's
+     sparse toolbar. Icons, labels and tooltips are untouched. */
+  --toolbarbutton-outer-padding: 2px;
+}
+
+/* ------------------------------------------------------------
+   Address bar
+   ------------------------------------------------------------
+   --urlbar-container-height is Firefox's own hook for sizing the
+   address-bar row; --zen-toolbar-height - 2px keeps the field
+   centered inside the compact bar. */
+#urlbar-container {
+  --urlbar-container-height: calc(var(--zen-toolbar-height) - 6px);
+}
+
+#urlbar {
+  min-height: var(--zen-urlbar-height);
+}
+
+/* ------------------------------------------------------------
+   Everything else in the toolbox
+   ------------------------------------------------------------
+   #TabsToolbar and #toolbar-menubar are already handled natively
+   (empty tab strip collapses; the menu bar auto-hides behind Alt).
+   The Bookmarks toolbar is left alone: hiding it would remove the
+   user's own tool-and-control placement. */
