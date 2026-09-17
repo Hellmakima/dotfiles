@@ -3,3 +3,8 @@ on   = [ "g", "i" ]
 run  = "plugin lazygit"
 desc = "run lazygit"
 
+[[mgr.prepend_keymap]]
+on   = [ "g", "w" ]
+run  = "cd /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Documents"
+desc = "go to whatsapp Media/Documents"
+
