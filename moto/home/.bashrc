@@ -26,6 +26,26 @@ alias rc="v ~/.bashrc"
 
 tmp="$PREFIX/tmp"
 
+qr() {
+  local img="${1:-$(ls -t ~/storage/pictures/Screenshots/* 2>/dev/null | head -1)}"
+  [ -z "$img" ] && {
+    echo "no screenshot found"
+    return 1
+  }
+  [ -f "$img" ] || {
+    echo "$img: not found"
+    return 1
+  }
+  local out
+  out=$(zbarimg -q "$img" 2>/dev/null | sed 's/^QR-Code://')
+  [ -z "$out" ] && {
+    echo "no qr found"
+    return 1
+  }
+  echo "$out"
+  echo "$out" | termux-clipboard-set
+}
+
 duck() {
   w3m "https://lite.duckduckgo.com/lite/?q=$(printf '%s' "$*" | sed 's/ /+/g')"
 }
@@ -52,9 +72,9 @@ bind -x '"\C-@": __command_palette__' 2>/dev/null
 __command_palette__() {
   local cmd
   cmd=$(
-    compgen -ac | sort -u \
-      | rg -v '^(_|[. ])' \
-      | fzf --height 60% --border --layout=reverse --prompt='Run> '
+    compgen -ac | sort -u |
+      rg -v '^(_|[. ])' |
+      fzf --height 60% --border --layout=reverse --prompt='Run> '
   ) || return
   READLINE_LINE=$cmd
   READLINE_POINT=${#READLINE_LINE}
@@ -66,11 +86,13 @@ bind -x '"\C-r": __fzf_history__' 2>/dev/null
 __fzf_history__() {
   local selected
   selected=$(
-    fc -ln 1 2>/dev/null \
-      | awk 'NF && !seen[$0]++' \
-      | fzf --height 40% --border --layout=reverse --scheme=history \
-            --prompt='History> ' --query="$READLINE_LINE" --tiebreak=index
+    fc -ln 1 2>/dev/null |
+      awk 'NF && !seen[$0]++' |
+      fzf --height 40% --border --layout=reverse --scheme=history \
+        --prompt='History> ' --query="$READLINE_LINE" --tiebreak=index
   ) || return
   READLINE_LINE=$selected
   READLINE_POINT=${#READLINE_LINE}
 }
+
+sshd
