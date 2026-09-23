@@ -3,24 +3,43 @@
 set -e
 
 REMOTE="gd:"
-ADDR="127.0.0.1:2022"
+HOST="127.0.0.1"
+PORT="2022"
+ADDR="$HOST:$PORT"
 USER="gd"
 KEY="$HOME/.ssh/gdrive_sftp"
 LOG="$PREFIX/tmp/gdserve.log"
 PIDFILE="$PREFIX/tmp/gdserve.pid"
 
+port_open() {
+	if exec 9<>/dev/tcp/$HOST/$PORT 2>/dev/null; then
+		exec 9<&-
+		exec 9>&-
+		return 0
+	fi
+	return 1
+}
+
 start() {
+	if port_open; then
+		echo "gdserve: already up on sftp://gd ($ADDR)"
+		return 0
+	fi
 	pkill -x rclone 2>/dev/null || true
 	sleep 1
-	setsid rclone serve sftp "$REMOTE" \
-		--addr "$ADDR" \
-		--user "$USER" \
-		--authorized-keys "$KEY.pub" \
-		--vfs-cache-mode off \
-		>>"$LOG" 2>&1 </dev/null &
-	echo $! >"$PIDFILE"
-	sleep 2
-	if pgrep -x rclone >/dev/null; then
+	(
+		setsid nohup rclone serve sftp "$REMOTE" \
+			--addr "$ADDR" \
+			--user "$USER" \
+			--authorized-keys "$KEY.pub" \
+			--vfs-cache-mode off \
+			>>"$LOG" 2>&1 </dev/null &
+	)
+	for i in $(seq 1 45); do
+		port_open && break
+		sleep 1
+	done
+	if port_open; then
 		echo "gdserve: up on sftp://gd ($ADDR)"
 	else
 		echo "gdserve: FAILED - check $LOG"
@@ -40,8 +59,8 @@ case "${1:-start}" in
 	stop) stop ;;
 	restart) stop && start ;;
 	status)
-		if pgrep -x rclone >/dev/null; then
-			echo "gdserve: running ($(pgrep -x rclone | head -1))"
+		if port_open; then
+			echo "gdserve: running ($ADDR)"
 		else
 			echo "gdserve: not running"
 		fi
