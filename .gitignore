@@ -8,3 +8,7 @@
 /moto/home/.config/termai/config.json
 /moto/home/.w3m/cookie
 /moto/home/.w3m/history
+/moto/home/.config/gh/config.yml
+/moto/home/.config/gh/hosts.yml
+/moto/home/.config/opencode/service.json
+/moto/home/.config/rclone/rclone.conf
