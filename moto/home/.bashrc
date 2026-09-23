@@ -26,6 +26,8 @@ alias rc="v ~/.bashrc"
 
 tmp="$PREFIX/tmp"
 
+[ -x "$HOME/dots/moto/bin/gdserve" ] && "$HOME/dots/moto/bin/gdserve" status >/dev/null || "$HOME/dots/moto/bin/gdserve" start >/dev/null 2>&1
+
 qr() {
   local img="${1:-$(ls -t ~/storage/pictures/Screenshots/* 2>/dev/null | head -1)}"
   [ -z "$img" ] && {
@@ -87,7 +89,8 @@ __fzf_history__() {
   local selected
   selected=$(
     fc -ln 1 2>/dev/null |
-      awk 'NF && !seen[$0]++' |
+      tac |
+      awk '{ sub(/^[[:space:]]+/, ""); if (NF && !seen[$0]++) print }' |
       fzf --height 40% --border --layout=reverse --scheme=history \
         --prompt='History> ' --query="$READLINE_LINE" --tiebreak=index
   ) || return

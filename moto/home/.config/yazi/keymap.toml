@@ -8,3 +8,8 @@ on   = [ "g", "w" ]
 run  = "cd /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Documents"
 desc = "go to whatsapp Media/Documents"
 
+[[mgr.prepend_keymap]]
+on   = [ "g", "d" ]
+run  = "cd sftp://gd"
+desc = "go to Google Drive (via rclone serve sftp)"
+

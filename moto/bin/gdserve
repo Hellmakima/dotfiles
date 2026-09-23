@@ -1,0 +1,50 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# gdserve - serve Google Drive over local SFTP for yazi (no FUSE needed)
+set -e
+
+REMOTE="gd:"
+ADDR="127.0.0.1:2022"
+USER="gd"
+KEY="$HOME/.ssh/gdrive_sftp"
+LOG="$PREFIX/tmp/gdserve.log"
+PIDFILE="$PREFIX/tmp/gdserve.pid"
+
+start() {
+	pkill -x rclone 2>/dev/null || true
+	sleep 1
+	setsid rclone serve sftp "$REMOTE" \
+		--addr "$ADDR" \
+		--user "$USER" \
+		--authorized-keys "$KEY.pub" \
+		--vfs-cache-mode off \
+		>>"$LOG" 2>&1 </dev/null &
+	echo $! >"$PIDFILE"
+	sleep 2
+	if pgrep -x rclone >/dev/null; then
+		echo "gdserve: up on sftp://gd ($ADDR)"
+	else
+		echo "gdserve: FAILED - check $LOG"
+		cat "$LOG" | tail -5
+		exit 1
+	fi
+}
+
+stop() {
+	pkill -x rclone 2>/dev/null || true
+	rm -f "$PIDFILE"
+	echo "gdserve: stopped"
+}
+
+case "${1:-start}" in
+	start) start ;;
+	stop) stop ;;
+	restart) stop && start ;;
+	status)
+		if pgrep -x rclone >/dev/null; then
+			echo "gdserve: running ($(pgrep -x rclone | head -1))"
+		else
+			echo "gdserve: not running"
+		fi
+		;;
+	*) echo "usage: gdserve {start|stop|restart|status}" ;;
+esac

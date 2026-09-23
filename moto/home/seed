@@ -14,6 +14,7 @@ fastfetch
 ffmpeg
 file
 fzf
+gh
 git
 lazygit
 mandocs
@@ -34,13 +35,24 @@ which
 yazi
 zbar # qr code
 zoxide
+rclone
+
+rclone: remote `gd` (Google Drive, scope=drive, token saved ~/.config/rclone/rclone.conf)
+         shared client ides retired 2026 -> make own at rclone.org/drive#making-your-own-client-id
+
+GDrive in yazi (no FUSE):
+  ssh-keygen -t ed25519 -f ~/.ssh/gdrive_sftp -N ""
+  bin/gdserve      # start/stop/status local SFTP bridge on 127.0.0.1:2022 (auto-starts in .bashrc)
+  yazi keymap g d  # cd sftp://gd  (vfs.toml registers host)
+  vfs.toml has [sftp.gd] host=127.0.0.1 user=gd port=2022 key_file=~/.ssh/gdrive_sftp
 
 set up git ssh key
 set up git global configs
 clone dotfiles and stow
 
 set up
-https://github.com/Hope2333/opencode-termux/releases
+`curl -fsSL https://opencode.ai/v2/install | bash`
+`pkg upgrade opencode`
 https://github.com/esriaksoyeb/termai
 ```sh
      sed -i 's/gemini-2\.5-flash/gemini-3.5-flash-lite/g; s/
@@ -48,6 +60,10 @@ https://github.com/esriaksoyeb/termai
      site-packages/termai_pkg/__init__.py"
 ```
 in tmux, press `I and `q
+
+clipboard tmux<->nvim via OSC52:
+  .tmux.conf: set -g set-clipboard on
+  nvim: lua/config/options.lua sets vim.g.clipboard to require vim.ui.clipboard.osc52
 
 for pydantic on py3.14
 uv init repro && cd repro
