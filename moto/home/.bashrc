@@ -12,7 +12,24 @@ alias lt="eza --tree --icons --git-ignore"
 alias op="opencode"
 alias od="objdump"
 alias g="lazygit"
-alias ip="ifconfig 2> /dev/null | grep inet | awk '{print \$2}'"
+function ip(){
+  ifconfig 2>/dev/null | awk '
+    /^[a-zA-Z0-9_]+:/ { iface = $1; sub(":", "", iface); next }
+    iface != "" && iface != "lo" && $1 == "inet" {
+      split($2, a, ":")
+      addr = (a[2] != "") ? a[2] : a[1]
+      if (iface ~ /^(tun|tap|tailscale|wg|uvpn|ppp|ipsec)/) label = "vpn"
+      else if (addr ~ /^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)/) label = "lan"
+      else label = "isp"
+      if (!(label in seen)) seen[label] = addr
+      iface = ""
+    }
+    END {
+      order[1] = "vpn"; order[2] = "isp"; order[3] = "lan"
+      for (i = 1; i <= 3; i++) if (order[i] in seen) print order[i] ": " seen[order[i]]
+    }
+  '
+}
 alias t="tmux attach &> /dev/null || tmux"
 alias c="clear"
 alias cd..="cd .."
@@ -64,6 +81,23 @@ mk() {
 d() {
   yazi --cwd-file="$tmp/cwd-file"
   cd -- "$(cat "$tmp/cwd-file")"
+}
+
+m3u8() {
+  [ -z "$1" ] && {
+    echo "usage: m3u8 <url> [out.mp4]"
+    return 1
+  }
+  ffmpeg \
+    -reconnect 1 \
+    -reconnect_streamed 1 \
+    -reconnect_on_network_error 1 \
+    -reconnect_on_http_error 4xx,5xx \
+    -reconnect_max_retries 20 \
+    -seg_max_retry 10 \
+    -i "$1" \
+    -c copy \
+    "${2:-out.mp4}"
 }
 
 eval "$(zoxide init --cmd cd bash)"
