@@ -12,12 +12,10 @@ LOG="$PREFIX/tmp/gdserve.log"
 PIDFILE="$PREFIX/tmp/gdserve.pid"
 
 port_open() {
-	if exec 9<>/dev/tcp/$HOST/$PORT 2>/dev/null; then
-		exec 9<&-
-		exec 9>&-
-		return 0
-	fi
-	return 1
+	{ exec 9<>/dev/tcp/$HOST/$PORT; } 2>/dev/null || return 1
+	exec 9<&-
+	exec 9>&-
+	return 0
 }
 
 start() {
@@ -61,8 +59,10 @@ case "${1:-start}" in
 	status)
 		if port_open; then
 			echo "gdserve: running ($ADDR)"
+			exit 0
 		else
 			echo "gdserve: not running"
+			exit 1
 		fi
 		;;
 	*) echo "usage: gdserve {start|stop|restart|status}" ;;
