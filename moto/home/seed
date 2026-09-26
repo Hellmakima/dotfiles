@@ -79,3 +79,10 @@ uv init repro && cd repro
   uv sync
 3. Verify:
   uv run python -c "import pydantic, pydantic_core; print(pydantic.__version__, pydantic_core.__version__)"
+
+case-insensitive tab completion (.bashrc):
+  bind 'set completion-ignore-case on'   # readline: filenames
+  shopt -s nocasematch                    # programmable completion matches + [[ a == A ]]
+  `complete -o nocasematch` does NOT exist (valid -o: bashdefault default dirnames
+  filenames fullquote noquote nosort nospace plusdirs)
+  command names need: pkg install bash-completion

@@ -100,6 +100,9 @@ m3u8() {
     "${2:-out.mp4}"
 }
 
+shopt -s nocasematch
+bind 'set completion-ignore-case on'
+
 eval "$(zoxide init --cmd cd bash)"
 
 # fzf-powered command palette on Ctrl+^
