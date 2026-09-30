@@ -11,3 +11,12 @@ vim.keymap.set({"n", "v"}, "q", "<cmd>q<cr>", { desc = "quit" })
 vim.keymap.set({"i", "v"}, "jk", "<ESC>", { desc = "write"})
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "half page down + center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "half page up + center" })
+
+local function toggle_number()
+  local nr = vim.wo.number
+  vim.wo.number = not nr
+  vim.wo.relativenumber = not nr
+end
+
+vim.keymap.set("n", "<C-n>", toggle_number, { desc = "Toggle line numbers" })
+vim.api.nvim_create_user_command("Ln", toggle_number, { desc = "Toggle line numbers" })

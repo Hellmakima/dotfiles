@@ -4,12 +4,28 @@
     "name": "system"
   },
   "diffs": {
-    "wrap": "word"
+    "wrap": "word",
+    "view": "auto"
   },
   "session": {
     "sidebar": "hide",
     "scrollbar": false,
     "thinking": "hide"
   },
-  "animations": false
+  "animations": false,
+  "tabs": {
+    "mode": "off",
+    "scope": "cwd",
+    "layout": "vertical"
+  },
+  "scroll": {
+    "speed": 1,
+    "acceleration": true
+  },
+  "prompt": {
+    "image_preview": true
+  },
+  "terminal": {
+    "title": false
+  }
 }

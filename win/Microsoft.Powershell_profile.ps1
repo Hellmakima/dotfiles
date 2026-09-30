@@ -35,3 +35,26 @@ function r { . $PROFILE }
 
 # SCP
 $ServerIp = "172.24.26.54"
+
+# profile
+function prompt {
+    # Get current path relative to home
+    $homeRelative = $PWD.Path.Replace($HOME, '~')
+
+    # Set green color for the path
+    Write-Host "$homeRelative" -NoNewline -ForegroundColor Blue
+    Write-Host " $" -NoNewline
+    return " "
+}
+
+# CMD where command alias
+function wh { (Get-Command $args[0]).Source }
+
+# Exit PowerShell on Ctrl+D
+Set-PSReadLineKeyHandler -Chord "Ctrl+d" -BriefDescription "Exit on Ctrl+D" -ScriptBlock {
+    [System.Environment]::Exit(0)
+}
+
+# touch for new file
+Set-Alias touch New-Item
+
