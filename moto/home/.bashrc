@@ -135,4 +135,76 @@ __fzf_history__() {
   READLINE_POINT=${#READLINE_LINE}
 }
 
+# Tab inserts a file path into the readline line (fzf + compgen)
+bind -x '"\t": __fzf_path__' 2>/dev/null
+
+__fzf_path__() {
+  local pre post word dir pat pick new left
+
+  pre="${READLINE_LINE:0:READLINE_POINT}"
+  post="${READLINE_LINE:READLINE_POINT}"
+  word="${pre##* }" # partial token before cursor, empty if line ends in space
+
+  # split token into dir prefix + name pattern
+  case "$word" in
+    */*)
+      dir="${word%/*}"
+      pat="${word##*/}"
+      [ -n "$dir" ] || dir="/"
+      ;;
+    *) dir="." pat="$word" ;;
+  esac
+
+  pick=$(
+    cd -- "$dir" 2>/dev/null || exit
+    compgen -f -- "$pat" |
+      fzf --height 50% --border --layout=reverse --prompt='Path> ' --query="$pat"
+  ) || return
+  [ -n "$pick" ] || return
+
+  # rebuild the token, preserving the ./ style the user typed
+  if [ "$dir" = "." ]; then
+    case "$word" in
+      ./*) new="./$pick" ;;
+      *) new="$pick" ;;
+    esac
+  else
+    new="${dir%/}/$pick"
+  fi
+
+  # trailing slash on dirs so you can tab straight into them
+  [ -d "$new" ] && new="$new/"
+
+  left="${pre%"$word"}"
+
+  # quote for the shell: escape spaces, backslashes and glob chars
+  esc=${new//\\/\\\\}
+  esc=${esc// /\\ }
+  esc=${esc//\*/\\*}
+  esc=${esc//\?/\\?}
+  esc=${esc//\[/\\[}
+  esc=${esc//\]/\\]}
+  esc=${esc//\$/\\$}
+
+  READLINE_LINE="${left}${esc}${post}"
+  READLINE_POINT=$(( ${#left} + ${#esc} ))
+}
+
+# fd-backed fzf file picker. Tab multi-selects, Enter opens in nvim.
+# Args are passed through to fd, e.g. f -e rs, f -H, f md
+f() {
+  local files
+  files=$(
+    fd --type f --strip-cwd-prefix . "$@" |
+      fzf --multi --bind 'tab:toggle+down' --height 50% --border \
+        --layout=reverse --prompt='File> '
+  ) || return
+  [ -z "$files" ] && return
+  if [ "$(printf '%s\n' "$files" | wc -l)" -eq 1 ]; then
+    nvim "$files"
+  else
+    printf '%s\n' "$files" | xargs -r -d '\n' nvim
+  fi
+}
+
 sshd
