@@ -1,18 +1,46 @@
-alias v="nvim"
-alias w="w3m"
-
-export PATH="$HOME/.cargo/bin:$PATH"
-
-export LS_COLORS="$(vivid generate molokai)"
-
 alias b="top -o PID,%CPU,%MEM,CMDLINE"
+alias c="clear"
+alias cd-="cd -"
+alias cd..="cd .."
+alias cd.="cd .."
+alias ff="fastfetch --logo /storage/emulated/0/Documents/wall/mak.jpg"
+alias g="lazygit"
 alias l="eza -l --icons --group-directories-first"
 alias ll="eza -la --icons --group-directories-first"
 alias lt="eza --tree --icons --git-ignore"
-alias op="opencode"
 alias od="objdump"
-alias g="lazygit"
-function ip(){
+alias op="opencode"
+alias r="source ~/.bashrc"
+alias rc="v ~/.bashrc"
+alias t="tmux attach &> /dev/null || tmux"
+alias tl="tldr"
+alias uu="pkg update && pkg upgrade"
+alias v="nvim"
+alias w="w3m"
+alias x="cd ~ && clear"
+alias xx="exit"
+export LS_COLORS="$(vivid generate molokai)"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+d() {
+  yazi --cwd-file="$tmp/cwd-file"
+  cd -- "$(cat "$tmp/cwd-file")"
+}
+
+gd() {
+  local gs="$HOME/dots/moto/bin/gdserve"
+  if [ ! -x "$gs" ]; then
+    echo "gdserve: not found at $gs"
+    return 1
+  fi
+  "$gs" status || "$gs" start
+}
+
+hi() {
+  echo "Hello 🤗"
+}
+
+ip() {
   ifconfig 2>/dev/null | awk '
     /^[a-zA-Z0-9_]+:/ { iface = $1; sub(":", "", iface); next }
     iface != "" && iface != "lo" && $1 == "inet" {
@@ -30,20 +58,28 @@ function ip(){
     }
   '
 }
-alias t="tmux attach &> /dev/null || tmux"
-alias c="clear"
-alias cd..="cd .."
-alias cd-="cd -"
-alias ff="fastfetch --logo /storage/emulated/0/Documents/wall/mak.jpg"
-alias uu="pkg update && pkg upgrade"
-alias x="cd ~ && clear"
-alias xx="exit"
-alias r="source ~/.bashrc"
-alias rc="v ~/.bashrc"
 
-tmp="$PREFIX/tmp"
+mk() {
+  mkdir $1
+  cd $1
+}
 
-[ -x "$HOME/dots/moto/bin/gdserve" ] && "$HOME/dots/moto/bin/gdserve" status >/dev/null || "$HOME/dots/moto/bin/gdserve" start >/dev/null 2>&1
+m3u8() {
+  [ -z "$1" ] && {
+    echo "usage: m3u8 <url> [out.mp4]"
+    return 1
+  }
+  ffmpeg \
+    -reconnect 1 \
+    -reconnect_streamed 1 \
+    -reconnect_on_network_error 1 \
+    -reconnect_on_http_error 4xx,5xx \
+    -reconnect_max_retries 20 \
+    -seg_max_retry 10 \
+    -i "$1" \
+    -c copy \
+    "${2:-out.mp4}"
+}
 
 qr() {
   local img="${1:-$(ls -t ~/storage/pictures/Screenshots/* 2>/dev/null | head -1)}"
@@ -65,45 +101,12 @@ qr() {
   echo "$out" | termux-clipboard-set
 }
 
-duck() {
-  w3m "https://lite.duckduckgo.com/lite/?q=$(printf '%s' "$*" | sed 's/ /+/g')"
-}
-
-hi() {
-  echo "Hello 🤗"
-}
-
-mk() {
-  mkdir $1
-  cd $1
-}
-
-d() {
-  yazi --cwd-file="$tmp/cwd-file"
-  cd -- "$(cat "$tmp/cwd-file")"
-}
-
-m3u8() {
-  [ -z "$1" ] && {
-    echo "usage: m3u8 <url> [out.mp4]"
-    return 1
-  }
-  ffmpeg \
-    -reconnect 1 \
-    -reconnect_streamed 1 \
-    -reconnect_on_network_error 1 \
-    -reconnect_on_http_error 4xx,5xx \
-    -reconnect_max_retries 20 \
-    -seg_max_retry 10 \
-    -i "$1" \
-    -c copy \
-    "${2:-out.mp4}"
-}
-
+eval "$(zoxide init --cmd cd bash)"
+source <(fzf --bash)
 shopt -s nocasematch
 bind 'set completion-ignore-case on'
-
-eval "$(zoxide init --cmd cd bash)"
+PROMPT_COMMAND='history -a'
+HISTCONTROL=
 
 # fzf-powered command palette on Ctrl+^
 bind -x '"\C-@": __command_palette__' 2>/dev/null
@@ -112,99 +115,11 @@ __command_palette__() {
   local cmd
   cmd=$(
     compgen -ac | sort -u |
-      rg -v '^(_|[. ])' |
+      rg -v '^(_|[. ]|termai$)' |
       fzf --height 60% --border --layout=reverse --prompt='Run> '
   ) || return
   READLINE_LINE=$cmd
   READLINE_POINT=${#READLINE_LINE}
-}
-
-# fzf-powered Ctrl+R history lookup
-bind -x '"\C-r": __fzf_history__' 2>/dev/null
-
-__fzf_history__() {
-  local selected
-  selected=$(
-    fc -ln 1 2>/dev/null |
-      tac |
-      awk '{ sub(/^[[:space:]]+/, ""); if (NF && !seen[$0]++) print }' |
-      fzf --height 40% --border --layout=reverse --scheme=history \
-        --prompt='History> ' --query="$READLINE_LINE" --tiebreak=index
-  ) || return
-  READLINE_LINE=$selected
-  READLINE_POINT=${#READLINE_LINE}
-}
-
-# Tab inserts a file path into the readline line (fzf + compgen)
-bind -x '"\t": __fzf_path__' 2>/dev/null
-
-__fzf_path__() {
-  local pre post word dir pat pick new left
-
-  pre="${READLINE_LINE:0:READLINE_POINT}"
-  post="${READLINE_LINE:READLINE_POINT}"
-  word="${pre##* }" # partial token before cursor, empty if line ends in space
-
-  # split token into dir prefix + name pattern
-  case "$word" in
-    */*)
-      dir="${word%/*}"
-      pat="${word##*/}"
-      [ -n "$dir" ] || dir="/"
-      ;;
-    *) dir="." pat="$word" ;;
-  esac
-
-  pick=$(
-    cd -- "$dir" 2>/dev/null || exit
-    compgen -f -- "$pat" |
-      fzf --height 50% --border --layout=reverse --prompt='Path> ' --query="$pat"
-  ) || return
-  [ -n "$pick" ] || return
-
-  # rebuild the token, preserving the ./ style the user typed
-  if [ "$dir" = "." ]; then
-    case "$word" in
-      ./*) new="./$pick" ;;
-      *) new="$pick" ;;
-    esac
-  else
-    new="${dir%/}/$pick"
-  fi
-
-  # trailing slash on dirs so you can tab straight into them
-  [ -d "$new" ] && new="$new/"
-
-  left="${pre%"$word"}"
-
-  # quote for the shell: escape spaces, backslashes and glob chars
-  esc=${new//\\/\\\\}
-  esc=${esc// /\\ }
-  esc=${esc//\*/\\*}
-  esc=${esc//\?/\\?}
-  esc=${esc//\[/\\[}
-  esc=${esc//\]/\\]}
-  esc=${esc//\$/\\$}
-
-  READLINE_LINE="${left}${esc}${post}"
-  READLINE_POINT=$(( ${#left} + ${#esc} ))
-}
-
-# fd-backed fzf file picker. Tab multi-selects, Enter opens in nvim.
-# Args are passed through to fd, e.g. f -e rs, f -H, f md
-f() {
-  local files
-  files=$(
-    fd --type f --strip-cwd-prefix . "$@" |
-      fzf --multi --bind 'tab:toggle+down' --height 50% --border \
-        --layout=reverse --prompt='File> '
-  ) || return
-  [ -z "$files" ] && return
-  if [ "$(printf '%s\n' "$files" | wc -l)" -eq 1 ]; then
-    nvim "$files"
-  else
-    printf '%s\n' "$files" | xargs -r -d '\n' nvim
-  fi
 }
 
 sshd

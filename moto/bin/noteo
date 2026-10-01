@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/data/data/com.termux/files/usr/bin/python3
 
 from subprocess import getoutput
 getoutput(f"am start -a android.intent.action.VIEW -d 'obsidian://open?vault=files&file=note.md'")
