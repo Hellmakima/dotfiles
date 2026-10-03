@@ -21,6 +21,7 @@ alias x="cd ~ && clear"
 alias xx="exit"
 export LS_COLORS="$(vivid generate molokai)"
 export PATH="$HOME/.cargo/bin:$PATH"
+tmp="$PREFIX/tmp/"
 
 d() {
   yazi --cwd-file="$tmp/cwd-file"
@@ -101,13 +102,6 @@ qr() {
   echo "$out" | termux-clipboard-set
 }
 
-eval "$(zoxide init --cmd cd bash)"
-source <(fzf --bash)
-shopt -s nocasematch
-bind 'set completion-ignore-case on'
-PROMPT_COMMAND='history -a'
-HISTCONTROL=
-
 # fzf-powered command palette on Ctrl+^
 bind -x '"\C-@": __command_palette__' 2>/dev/null
 
@@ -122,4 +116,10 @@ __command_palette__() {
   READLINE_POINT=${#READLINE_LINE}
 }
 
+source <(fzf --bash)
+shopt -s nocasematch
+bind 'set completion-ignore-case on'
+PROMPT_COMMAND='history -a'
+HISTCONTROL=
+eval "$(zoxide init --cmd cd bash)"
 sshd
