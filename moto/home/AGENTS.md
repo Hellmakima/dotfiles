@@ -6,7 +6,8 @@ Package manager is `pkg`/`apt` (Termux repos, glibc repo enabled). There is **no
 The user likes minimal packages. Ask before any install you wish to make (pkg, uv etc). Anytime u make a change that is not a config file in stow (setting up gh-cli or gd) update `~/seed`. It's a manual for fresh termux install.
 All the dot files live in `~/dots`. It has dotfiles for other machines as well, do not touch those, it is used with stow and git.
 Obsidian vault located at `/storage/emulated/0/Documents/files`.
-All simple python scripts located in `~/dots/moto/bin`
+All simple scripts located in `~/dots/moto/bin`
+  cd ~/dots/moto && stow -t $PREFIX/bin bin
 
 ## This phone's setup
 

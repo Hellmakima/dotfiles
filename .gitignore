@@ -13,3 +13,4 @@
 /moto/home/.config/opencode/service.json
 /moto/home/.config/rclone/rclone.conf
 /moto/home/.tmux/plugins
+/moto/home/.config/nvim/lazy-lock.json

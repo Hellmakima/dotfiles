@@ -14,9 +14,9 @@
   },
   "animations": false,
   "tabs": {
-    "mode": "off",
+    "mode": "auto",
     "scope": "cwd",
-    "layout": "vertical"
+    "layout": "horizontal"
   },
   "scroll": {
     "speed": 1,
