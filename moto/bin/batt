@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Battery report for the tmux popup on `b
+info=$(termux-battery-status 2>/dev/null) || info=""
+if [ -z "$info" ]; then
+    echo "battery status unavailable"
+    exit 1
+fi
+g() { printf '%s' "$info" | jq -r ".$1 // \"--\""; }
+
+pct=$(g percentage)
+plug=$(g plugged)
+low=$(g level)
+status=$(g status)
+temp=$(g temperature)
+volt=$(g voltage)
+health=$(g health)
+current=$(g current)
+
+if [ "$plug" = "PLUGGED" ]; then
+    icon=$(printf '\u26a1')
+    state="CHARGING"
+else
+    icon=""
+    state="$status"
+fi
+
+draw() {
+    # 20 cells wide progress bar
+    filled=$(( pct * 20 / 100 ))
+    bar=""
+    i=0
+    while [ "$i" -lt 20 ]; do
+        if [ "$i" -lt "$filled" ]; then
+            bar="$bar#"
+        else
+            bar="$bar."
+        fi
+        i=$(( i + 1 ))
+    done
+    printf '[%s] %3s%% %s %s\n' "$bar" "$pct" "$icon" "$state"
+}
+
+if [ "$1" = "--short" ]; then
+    printf 'battery %s%% %s %s | %s C | %s mV\n' "$pct" "$icon" "$state" "$temp" "$volt"
+    exit 0
+fi
+
+draw
+echo
+printf '  level      %s%%\n' "$low"
+printf '  health     %s\n' "$health"
+printf '  temp       %s C\n' "$temp"
+printf '  voltage    %s mV\n' "$volt"
+printf '  current    %s uA\n' "$current"
+printf '  raw        %s\n' "$info"
