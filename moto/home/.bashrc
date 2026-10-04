@@ -29,9 +29,9 @@ d() {
 }
 
 gd() {
-  local gs="$HOME/dots/moto/bin/gdserve"
-  if [ ! -x "$gs" ]; then
-    echo "gdserve: not found at $gs"
+  local gs="gdserve"
+  if ! command -v "$gs" >/dev/null; then
+    echo "gdserve: not on PATH (stow -t \$PREFIX/bin ~/dots/moto/bin)"
     return 1
   fi
   "$gs" status || "$gs" start

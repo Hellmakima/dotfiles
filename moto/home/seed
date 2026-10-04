@@ -1,13 +1,15 @@
+Update this file only when there are changes that need to be repeated during a fresh setup
 termux-change-repo -> choose single mirror cloudflared
 pkg update && pkg upgrade
 
-termux-setup-storate
+termux-setup-storage
 ln -s /storage/emulated/0/ ~/storage/0
 ln -s /storage/emulated/0/Documents/ ~/storage/documents
 ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/whatsapp
 
 Install:
 apksigner
+chafa
 exiftool
 eza
 fastfetch
@@ -51,19 +53,16 @@ set up git global configs
 clone dotfiles and stow
 
 set up
-`curl -fsSL https://opencode.ai/v2/install | bash`
-`pkg upgrade opencode`
-https://github.com/esriaksoyeb/termai
+[opencode](https://github.com/Hope2333/opencode-termux/releases) <- Get the 2 .deb files
+  example the [normal](https://github.com/Hope2333/opencode-termux/releases/download/Push260928/opencode_2.0.18_aarch64.deb] and the [wrapper](https://github.com/Hope2333/opencode-termux/releases/download/Push260928/opencode-wrapper-2.0.18-3-aarch64.pkg.tar.xz)
+[termai](https://github.com/estiaksoyeb/termai)
 ```sh
-     sed -i 's/gemini-2\.5-flash/gemini-3.5-flash-lite/g; s/
-     gemini-2\.5-pro/gemini-3.5-pro/g' "$PREFIX/lib/python3.14/
+     sed -i 's/gemini-2\.5-flash/gemini-3.1-flash-lite/g; s/
+     gemini-2\.5-pro/gemini-3.1-pro-preview/g' "$PREFIX/lib/python3.14/
      site-packages/termai_pkg/__init__.py"
+     sed -i 's/gemini-2\.5-flash/gemini-3.1-flash-lite/' ~/.config/termai/config.json
 ```
 in tmux, press `I and `q
-
-clipboard tmux<->nvim via OSC52:
-  .tmux.conf: set -g set-clipboard on
-  nvim: lua/config/options.lua sets vim.g.clipboard to require vim.ui.clipboard.osc52
 
 for pydantic on py3.14
 uv init repro && cd repro
