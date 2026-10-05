@@ -122,4 +122,5 @@ bind 'set completion-ignore-case on'
 PROMPT_COMMAND='history -a'
 HISTCONTROL=
 eval "$(zoxide init --cmd cd bash)"
+printf '\e[5 q'
 sshd
