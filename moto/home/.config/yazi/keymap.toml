@@ -13,3 +13,33 @@ on   = [ "g", "d" ]
 run  = "cd sftp://gd"
 desc = "go to Google Drive (via rclone serve sftp)"
 
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "a" ]
+run  = "plugin compress"
+desc = "archive selected files"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "p" ]
+run  = "plugin compress -p"
+desc = "archive selected files (password)"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "h" ]
+run  = "plugin compress -ph"
+desc = "archive selected files (password + header encryption)"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "l" ]
+run  = "plugin compress -l"
+desc = "archive selected files (compression level)"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "u" ]
+run  = "plugin compress -phl"
+desc = "archive selected files (password + header + level)"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "a", "7" ]
+run  = "plugin compress -phl 7z"
+desc = "archive selected files to 7z (password + header + level)"
+

@@ -1,0 +1,7 @@
+[user]
+	name = Sufiyan Attar
+	email = sufiyanhattar@gmail.com
+[safe]
+	directory = /storage/emulated/0/Documents/files
+[init]
+	defaultBranch = master
