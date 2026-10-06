@@ -136,6 +136,56 @@ qr() {
   echo "$out" | termux-clipboard-set
 }
 
+# f# manga reader
+manga() {
+  local dir="${1:-.}"
+  local i=0
+  local key
+
+  mapfile -t pages < <(find "$dir" -type f | sort -V)
+
+  while true; do
+    clear
+    read w h < <(magick identify -format '%w %h' "${pages[$i]}")
+
+    vw=$(tput cols)
+    vh=$(tput lines)
+
+    # Keep the Sixel canvas proportional to the source image.
+    if ((w > h)); then
+      sw=$((vw))
+      sh=$((sw * h / w))
+    else
+      sh=$((vh * 157 / 60))
+      sw=$((sh * w / h))
+    fi
+
+    chafa \
+      --format sixels \
+      --passthrough tmux \
+      --stretch \
+      --view-size="${vw}x${vh}" \
+      --size="${sw}x${sh}" \
+      --margin-bottom 0 \
+      "${pages[$i]}"
+
+    read -rsn1 key
+
+    if [[ "$key" == $'\e' ]]; then
+      read -rsn2 key
+      case "$key" in
+      '[C') ((i++)) ;;
+      '[D') ((i--)) ;;
+      esac
+    elif [[ "$key" == q ]]; then
+      break
+    fi
+
+    ((i < 0)) && i=0
+    ((i >= ${#pages[@]})) && i=$((${#pages[@]} - 1))
+  done
+}
+
 # fzf-powered command palette on Ctrl+^
 bind -x '"\C-@": __command_palette__' 2>/dev/null
 

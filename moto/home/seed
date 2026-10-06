@@ -9,6 +9,7 @@ ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/w
 
 Install:
 apksigner
+aria2
 chafa
 exiftool
 eza

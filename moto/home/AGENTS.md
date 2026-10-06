@@ -70,14 +70,7 @@ moto
     │   ├── font.ttf.bak
     │   └── termux.properties
     ├── .tmux
-    │   ├── .tmux.conf
-    │   └── plugins
-    │       ├── tmux-continuum
-    │       ├── tmux-floax
-    │       ├── tmux-resurrect
-    │       ├── tmux-sensible
-    │       ├── tpm
-    │       └── vim-tmux-navigator
+    │   └── .tmux.conf
     ├── .tmux.conf
     ├── .w3m
     │   ├── config
