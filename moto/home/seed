@@ -52,7 +52,7 @@ GDrive in yazi (no FUSE):
 
 set up git ssh key
 set up git global configs
-clone dotfiles and stow
+clone dotfiles and stow (`stow -t ~ home` only; `moto/bin` is NOT stowed, .bashrc puts `$HOME/dots/moto/bin` on PATH)
 
 set up
 [opencode](https://github.com/Hope2333/opencode-termux/releases) <- Get the 2 .deb files

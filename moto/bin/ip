@@ -1,0 +1,18 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ip - print ip addresses labelled vpn/isp/lan
+ifconfig 2>/dev/null | awk '
+  /^[a-zA-Z0-9_]+:/ { iface = $1; sub(":", "", iface); next }
+  iface != "" && iface != "lo" && $1 == "inet" {
+    split($2, a, ":")
+    addr = (a[2] != "") ? a[2] : a[1]
+    if (iface ~ /^(tun|tap|tailscale|wg|uvpn|ppp|ipsec)/) label = "vpn"
+    else if (addr ~ /^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)/) label = "lan"
+    else label = "isp"
+    if (!(label in seen)) seen[label] = addr
+    iface = ""
+  }
+  END {
+    order[1] = "vpn"; order[2] = "isp"; order[3] = "lan"
+    for (i = 1; i <= 3; i++) if (order[i] in seen) print order[i] ": " seen[order[i]]
+  }
+'

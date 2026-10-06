@@ -1,0 +1,32 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# n - pretty print recent notifications (optional regex filter as $1)
+filter="${1:-}"
+width="$(tput cols 2>/dev/null || echo 80)"
+if ! command -v termux-notification-list >/dev/null; then
+  echo "termux-api missing: pkg install termux-api"
+  exit 1
+fi
+data=$(termux-notification-list) || exit 1
+bidi=$(printf '\xe2\x80\x8e\xe2\x80\x8f\xe2\x80\xaa\xe2\x80\xab\xe2\x80\xac\xe2\x80\xad\xe2\x80\xae\xe2\x81\xa6\xe2\x81\xa7\xe2\x81\xa8\xe2\x81\xa9')
+printf '%s' "$data" | jq -r \
+  --arg f "$filter" \
+  --arg b "$bidi" \
+  --argjson w "$((width - 22))" '
+    def short: split(".")[-1];
+    def hue:
+      if . == "gm"        then "214"
+      elif . == "calendar" then "111"
+      elif . == "kite3"   then "79"
+      else "245" end;
+    def one: gsub("[\\n\\r\\t ]+"; " ") | gsub("(" + ($b | split("") | join("|")) + ")"; "");
+    (if $f == "" then . else map(select((.packageName + " " + .title + " " + .content) | test($f; "i"))) end)
+    | unique_by([.when, .packageName, .title, .content])
+    | sort_by(.when) | reverse | .[]
+    | .content |= one
+    | ( .when[11:16] ) + "  "
+      + ( .packageName | short | . as $p | "\u001b[38;5;\($p | hue)m\($p)\u001b[0m  " )
+      + "\u001b[1m" + (.title | one | .[0:40]) + "\u001b[0m  "
+      + ( if .content == "" then "\u001b[38;5;238m-\u001b[0m"
+          elif (.content | length) > $w then (.content[0:$w-1] + "\u2026")
+          else .content end )
+  '
