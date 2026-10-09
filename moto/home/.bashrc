@@ -21,6 +21,7 @@ alias v="nvim"
 alias w="w3m"
 alias x="cd ~ && clear"
 alias xx="exit"
+alias yt="yt-dlp --format 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]'"
 export LS_COLORS="$(vivid generate molokai)"
 export PATH="$HOME/.cargo/bin:$HOME/dots/moto/bin:$PATH"
 # ani-cli plays through the same mpv setup as the mpvv alias
