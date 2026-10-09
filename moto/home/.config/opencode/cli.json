@@ -14,7 +14,7 @@
   },
   "animations": false,
   "tabs": {
-    "mode": "auto",
+    "mode": "off",
     "scope": "cwd",
     "layout": "horizontal"
   },
