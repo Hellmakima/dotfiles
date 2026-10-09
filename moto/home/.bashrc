@@ -52,19 +52,7 @@ mk() {
   cd $1
 }
 
-# fzf-powered command palette on Ctrl+^
-bind -x '"\C-@": __command_palette__' 2>/dev/null
-
-__command_palette__() {
-  local cmd
-  cmd=$(
-    compgen -ac | sort -u |
-      rg -v '^(_|[. ]|termai$)' |
-      fzf --height 60% --border --layout=reverse --prompt='Run> '
-  ) || return
-  READLINE_LINE=$cmd
-  READLINE_POINT=${#READLINE_LINE}
-}
+source "$HOME/.config/bash/palette.sh"
 
 source <(fzf --bash)
 shopt -s nocasematch

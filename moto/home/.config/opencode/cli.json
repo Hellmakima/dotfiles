@@ -12,7 +12,7 @@
     "scrollbar": false,
     "thinking": "hide"
   },
-  "animations": true,
+  "animations": false,
   "tabs": {
     "mode": "auto",
     "scope": "cwd",
