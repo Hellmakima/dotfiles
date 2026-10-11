@@ -12,6 +12,8 @@ mpv_flags="--vid=1 --vo=sixel --vf=fps=10 --profile=fast --framedrop=decoder+vo 
 alias mpvv="mpv $mpv_flags"
 alias od="objdump"
 alias op="opencode"
+alias pi="pkg info"
+alias ps="pkg search"
 alias r="source ~/.bashrc"
 alias rc="v ~/.bashrc"
 alias t="tmux attach &> /dev/null || tmux"
@@ -45,6 +47,10 @@ gd() {
 
 hi() {
   echo "Hello 🤗"
+}
+
+gch() {
+  git clone "git@github.com:Hellmakima/$1.git"
 }
 
 mk() {

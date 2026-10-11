@@ -21,5 +21,8 @@ __command_palette__() {
 }
 
 case $- in
-  *i*) bind -x '"\C-@,\C-p": __command_palette__' 2>/dev/null ;;
+  *i*)
+    bind -x '"\C-@": __command_palette__' 2>/dev/null
+    bind -x '"\C-p": __command_palette__' 2>/dev/null
+    ;;
 esac

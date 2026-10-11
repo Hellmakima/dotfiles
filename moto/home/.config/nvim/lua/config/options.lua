@@ -8,6 +8,9 @@ local opt = vim.opt
 -- l at end of line jumps to the first char of the next line
 opt.whichwrap:append(",h,l")
 
+opt.number = false
+opt.relativenumber = false
+
 if vim.env.TMUX then
   vim.g.clipboard = {
     name = "osc52",
