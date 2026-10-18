@@ -105,3 +105,13 @@
     }
   }
 }
+
+* {
+   border-radius: 0px !important;
+}
+#urlbar{
+  opacity: 0.2 !important;
+}
+#urlbar:focus-within {
+  opacity: 0.95 !important;
+}

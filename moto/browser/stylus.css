@@ -1,7 +1,17 @@
 * {
   border-radius: 0 !important;
   box-shadow: none !important;
-  font-family: "JetBrainsMono Nerd Font", monospace !important;
+  /*font-family: "JetBrainsMono Nerd Font", monospace !important;*/
   animation: none !important;
   transition: none !important;
+}
+
+body,
+input,
+textarea,
+button,
+select,
+p, a, span, div, label, li, td, th,
+h1, h2, h3, h4, h5, h6 {
+  font-family: "JetBrainsMono Nerd Font", monospace !important;
 }
