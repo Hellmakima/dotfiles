@@ -58,3 +58,19 @@ Set-PSReadLineKeyHandler -Chord "Ctrl+d" -BriefDescription "Exit on Ctrl+D" -Scr
 # touch for new file
 Set-Alias touch New-Item
 
+# make new dir and cd into it.
+function mk {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$path
+    )
+
+    # Create the directory (like mkdir -p)
+    if (-not (Test-Path $path)) {
+        New-Item -ItemType Directory -Path $path -Force | Out-Null
+    }
+
+    # cd into it
+    Set-Location $path
+}
+

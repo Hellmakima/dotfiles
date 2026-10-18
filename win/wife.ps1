@@ -1,4 +1,4 @@
-netsh wlan connect name="alcohol"
+netsh wlan connect name="alcohol" 1>tmp
 
 # Wait for connection
 Start-Sleep -Seconds 2
@@ -13,9 +13,6 @@ if (-not $ServerIp) {
     exit 1
 }
 
-Write-Host "Connecting to $ServerIp..."
+Write-Host "$ServerIp"
 
-# SSH into ther server and open a proxy
-ssh -D 1080 $ServerIp -p 8022
-
-netsh wlan disconnect
+ssh -p8022 -D 1080 -q -o StrictHostKeyChecking=accept-new $ServerIp 2>tmp
