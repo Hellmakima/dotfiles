@@ -1,4 +1,4 @@
-small `scp` wrapper
+small `scp` wrapper, since `rsync` is not preinstalled
 on windows use
 ```py
 subprocess.check_output(
