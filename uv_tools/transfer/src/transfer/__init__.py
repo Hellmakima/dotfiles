@@ -24,6 +24,7 @@ EXCLUDE_DIRS = {
 }
 
 def get_files(path):
+    """Collect paths recursively, excluding configured directories."""
     if not os.path.isdir(path):
         return [path]
 
@@ -39,19 +40,29 @@ def get_files(path):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="uscp")
     subparsers = parser.add_subparsers(dest="action", required=True)
 
-    give = subparsers.add_parser("give")
-    give.add_argument("here")
-    give.add_argument("there")
+    give = subparsers.add_parser(
+        "give",
+        description="Copy files from the local machine to the remote machine, excluding configured directories.",
+        help="Upload files to the remote machine",
+    )
+    give.add_argument("here", help="Local source path")
+    give.add_argument("there", help="Remote destination path")
+    give.add_argument("ip", nargs="?", help="Optional remote IP (defaults to gateway)")
 
-    take = subparsers.add_parser("take")
-    take.add_argument("there")
-    take.add_argument("here")
+    take = subparsers.add_parser(
+        "take",
+        description="Copy files from the remote machine to the local machine, excluding configured directories.",
+        help="Download files from the remote machine",
+    )
+    take.add_argument("there", help="Remote source path")
+    take.add_argument("here", help="Local destination path")
+    take.add_argument("ip", nargs="?", help="Optional remote IP (defaults to gateway)")
 
     args = parser.parse_args()
-    gateway = get_gateway()
+    gateway = args.ip or get_gateway()
 
     if args.action == "give":
         for path in get_files(args.here):
