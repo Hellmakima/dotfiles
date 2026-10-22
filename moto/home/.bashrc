@@ -68,3 +68,8 @@ HISTCONTROL=
 eval "$(zoxide init --cmd cd bash)"
 printf '\e[5 q'
 sshd
+
+# --- cargo-apk2 (fake Android SDK built by ~/dev/androidx/tools/setup-sdk.sh) ---
+export ANDROID_HOME="$HOME/Android/sdk"
+export ANDROID_NDK_ROOT="$HOME/Android/sdk/ndk/21.4.7075529"
+export JAVA_HOME="$PREFIX/lib/jvm/java-21-openjdk"

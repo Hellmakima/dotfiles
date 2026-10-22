@@ -3,14 +3,20 @@ termux-change-repo -> choose single mirror cloudflared
 pkg update && pkg upgrade
 
 termux-setup-storage
-ln -s /storage/emulated/0/ ~/storage/0
-ln -s /storage/emulated/0/Documents/ ~/storage/documents
-ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/whatsapp
+remove the ~/storage as it is risky to have it there, instead rely on zoxide to navigate there anytime.
+same for the links below
+# ln -s /storage/emulated/0/ ~/storage/0
+# ln -s /storage/emulated/0/Documents/ ~/storage/documents
+# ln -s /storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/ ~/storage/whatsapp
 
 Install:
+aapt
+aapt2 # cargo-apk2
+android-tools # adb, for cargo-apk2 run
 apksigner
 aria2
 chafa
+d8 # dex compiler, for cargo-apk2 java sources
 exiftool
 eza
 fastfetch
@@ -44,6 +50,25 @@ rclone
 
 rclone: remote `gd` (Google Drive, scope=drive, token saved ~/.config/rclone/rclone.conf)
          shared client ides retired 2026 -> make own at rclone.org/drive#making-your-own-client-id
+
+androidx - cargo-apk2 (build Android APKs straight from Termux), git repo ~/dev/androidx
+  SETUP.md = full guide, README.md = quickstart, tools/, examples/hello-apk
+  git clone https://github.com/mzdk100/cargo-apk2 ~/dev/cargo-apk2
+  cargo install --path ~/dev/cargo-apk2/cargo-apk2
+  ~/dev/androidx/tools/setup-sdk.sh  # idempotent, builds ~/Android/sdk
+  .bashrc gets: ANDROID_HOME, ANDROID_NDK_ROOT, JAVA_HOME (java-21-openjdk)
+  apk needs: pkg install aapt aapt2 d8 apksigner openjdk-21 android-tools
+  no real NDK for aarch64 -> setup-sdk.sh fakes the SDK+NDK (symlinks Termux
+  clang/llvm binutils, google platform-36 android.jar, and a python `zipalign`
+  shim because Termux ships none); builds must set
+  build_targets = ["aarch64-linux-android"] or rely on the same host triple
+  rollback: pkg uninstall aapt aapt2 d8 openjdk-21 android-tools
+            rm -rf ~/Android/sdk ~/dev/cargo-apk2 ~/dev/androidx
+            rm -f ~/.cargo/bin/cargo-apk2 ~/.android/debug.keystore
+            drop the cargo-apk2 block from .bashrc
+            NOTE: `pkg upgrade abseil-cpp` ran to unbreak adb and pulled
+            abseil-cpp 20260817, imagemagick 7.1.2.34, mpv 0.41.0-5 - not undoable
+  test app: ~/dev/androidx/examples/hello-apk -> target/debug/apk/hello-apk.apk
 
 GDrive in yazi (no FUSE):
   ssh-keygen -t ed25519 -f ~/.ssh/gdrive_sftp -N ""
