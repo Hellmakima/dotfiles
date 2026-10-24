@@ -23,6 +23,28 @@ All simple scripts located in `~/dots/moto/bin`, on PATH via `.bashrc` (`export 
 - Commands must run on aarch64-android — avoid macOS/Linux-distro-specific invocations.
 - **No `/tmp` on Android/Termux.** Use `$PREFIX/tmp` (i.e. `/data/data/com.termux/files/usr/tmp`) for temp files; opencode's temp sandbox is `/data/data/com.termux/files/usr/tmp/opencode`. `$HOME/.bashrc` sets `tmp="$PREFIX/tmp"`.
 
+## cargo install on this phone
+
+Heavy crates hang or take 20+ min here. Three causes, all seen with `manga-tui`:
+
+1. **Crate's own release profile.** Many crates set `lto = "fat"`, `opt-level = "z"`, `codegen-units = 1`. Fat LTO on aarch64 is brutal. Override via env:
+   ```bash
+   CARGO_PROFILE_RELEASE_LTO=false \
+   CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 \
+   CARGO_PROFILE_RELEASE_OPT_LEVEL=2 \
+   cargo install <crate> --locked
+   ```
+2. **Never run two `cargo install` at once.** Concurrent runs corrupt `~/.cargo/.global-cache` (SQLite) and cargo then blocks forever with zero output at "Updating crates.io index". Fix: `mv ~/.cargo/.global-cache ~/.cargo/.global-cache.bad` and rerun. Check with `pgrep -af "cargo install"` before starting.
+3. **Never use `$PREFIX/tmp` as `--target-dir`.** Android wipes it, killing the build. Use a persistent dir and a log outside tmp:
+   ```bash
+   cargo install <crate> --locked --target-dir ~/.cache/<crate>-build \
+     > ~/.cache/<crate>-install.log 2>&1
+   ```
+
+Also: network is usually fine (crates.io downloads fast here). Do not blame the network or add mirrors/timeouts until `.global-cache` is ruled out. Diagnose with `ps -o pid,etime,time,stat,wchan -p <pid>`: high CPU time = compiling (wait), ~0 CPU + `do_select` = stuck on a socket or lock.
+
+Background long builds with `setsid nohup ... &` so they survive the harness killing the shell.
+
 structure of `~/dots/moto/`
 
 moto

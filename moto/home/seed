@@ -48,6 +48,10 @@ zbar # qr code
 zoxide
 rclone
 
+cargo:
+apk2
+manga-tui --locked
+
 rclone: remote `gd` (Google Drive, scope=drive, token saved ~/.config/rclone/rclone.conf)
          shared client ides retired 2026 -> make own at rclone.org/drive#making-your-own-client-id
 
@@ -69,6 +73,14 @@ androidx - cargo-apk2 (build Android APKs straight from Termux), git repo ~/dev/
             NOTE: `pkg upgrade abseil-cpp` ran to unbreak adb and pulled
             abseil-cpp 20260817, imagemagick 7.1.2.34, mpv 0.41.0-5 - not undoable
   test app: ~/dev/androidx/examples/hello-apk -> target/debug/apk/hello-apk.apk
+
+fastfetch binary override (`bin/fastfetch`, shadows pkg one on PATH):
+  # Termux's 2.70 build segfaults (SIGSEGV) in the sixel/image logo path.
+  # Official NDK build works:
+  curl -LO https://github.com/fastfetch-cli/fastfetch/releases/download/2.70.0/fastfetch-android-aarch64.tar.gz
+  tar xzf fastfetch-android-aarch64.tar.gz
+  install -m755 fastfetch-android-aarch64/data/data/com.termux/files/usr/bin/fastfetch ~/dots/moto/bin/fastfetch
+  .bashrc: alias ff="fastfetch --logo-type sixel --logo <img>"
 
 GDrive in yazi (no FUSE):
   ssh-keygen -t ed25519 -f ~/.ssh/gdrive_sftp -N ""
@@ -113,3 +125,8 @@ case-insensitive tab completion (.bashrc):
   `complete -o nocasematch` does NOT exist (valid -o: bashdefault default dirnames
   filenames fullquote noquote nosort nospace plusdirs)
   command names need: pkg install bash-completion
+
+---
+todo:
+manga-tui
+cargo install phonopaper-cli
