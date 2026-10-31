@@ -126,6 +126,39 @@ case-insensitive tab completion (.bashrc):
   filenames fullquote noquote nosort nospace plusdirs)
   command names need: pkg install bash-completion
 
+zsh + oh-my-zsh (Termux):
+  pkg install zsh
+  sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  chsh -s zsh          # only symlinks ~/.termux/shell, nothing in /etc/passwd
+  chsh -s bash         # undo
+  - bundled plugin vi-mode + VI_MODE_SET_CURSOR=true (block cursor in normal mode)
+  - custom plugins cloned to ~/.oh-my-zsh/custom/plugins:
+      zsh-autosuggestions, zsh-syntax-highlighting (must be LAST in plugins=())
+  - startup ~285ms on this phone (bash ~50ms). Breakdown: oh-my-zsh source ~240,
+    vivid ~36, zoxide ~31, fzf ~48; zsh alone is 33.
+  - compinit is disabled on purpose (compinit/compdef stubbed out before oh-my-zsh):
+    no Tab completion. Saves ~45ms and avoids the 1.2s zcompdump rebuild spike.
+    Delete those two stub lines to get Tab back.
+  - bash config does NOT parse in zsh: `bind`, `shopt`, `source <(fzf --bash)` all fail.
+    Use `source <(fzf --zsh)` and `eval "$(zoxide init --cmd cd zsh)"`.
+  - ~/.config/bash/palette.sh is bash-only; Ctrl-Space palette reimplemented as a zle
+    widget in ~/.zshrc (Ctrl-P left as history-up)
+  - zsh-completions is installed but $PREFIX/share/zsh/site-functions is NOT in fpath on
+    Termux; add `fpath=($PREFIX/share/zsh/site-functions $fpath)` before oh-my-zsh to use it
+  - remove cleanly: rm -rf ~/.oh-my-zsh ~/.zshrc ~/.zsh_history ~/.zcompdump*
+    pkg uninstall zsh zsh-completions
+  - prompt is native (no starship): 2-line,
+      PROMPT=$'%B%F{cyan}%~%f%b %F{cyan}$(git_prompt_info)%f\n%B%F{cyan}>%f%b '
+    Cost measured in a repo: native ~7ms/prompt, starship ~86ms/prompt on this
+    phone, so starship is installed but disabled (init line commented in .zshrc).
+  - transient prompt: starship has no native zsh support (issue #888), so
+    olets/zsh-transient-prompt is cloned to $ZSH_CUSTOM/plugins/transient-prompt
+    and added to plugins=() before zsh-syntax-highlighting. It is theme-agnostic:
+    set TRANSIENT_PROMPT_PROMPT / _TRANSIENT_PROMPT after the prompt is defined.
+  - RPROMPT is owned by the vi-mode indicator via TRANSIENT_PROMPT_RPROMPT.
+  - if starship is re-enabled: .config/starship.toml has [profiles] transient and
+    the four TRANSIENT_PROMPT_* vars must be assigned after `starship init`.
+
 ---
 todo:
 manga-tui
