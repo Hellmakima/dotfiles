@@ -31,6 +31,7 @@ mandocs
 neovim
 openjdk-xx
 openssh
+rclone
 rust
 rust-analyzer
 stow
@@ -46,7 +47,7 @@ which
 yazi
 zbar # qr code
 zoxide
-rclone
+zsh
 
 cargo:
 apk2
@@ -80,7 +81,7 @@ fastfetch binary override (`bin/fastfetch`, shadows pkg one on PATH):
   curl -LO https://github.com/fastfetch-cli/fastfetch/releases/download/2.70.0/fastfetch-android-aarch64.tar.gz
   tar xzf fastfetch-android-aarch64.tar.gz
   install -m755 fastfetch-android-aarch64/data/data/com.termux/files/usr/bin/fastfetch ~/dots/moto/bin/fastfetch
-  .bashrc: alias ff="fastfetch --logo-type sixel --logo <img>"
+  # bin/fastfetch shadows the pkg one; alias ff uses sixel + logo
 
 GDrive in yazi (no FUSE):
   ssh-keygen -t ed25519 -f ~/.ssh/gdrive_sftp -N ""
@@ -119,12 +120,34 @@ uv init repro && cd repro
 3. Verify:
   uv run python -c "import pydantic, pydantic_core; print(pydantic.__version__, pydantic_core.__version__)"
 
-case-insensitive tab completion (.bashrc):
-  bind 'set completion-ignore-case on'   # readline: filenames
-  shopt -s nocasematch                    # programmable completion matches + [[ a == A ]]
-  `complete -o nocasematch` does NOT exist (valid -o: bashdefault default dirnames
-  filenames fullquote noquote nosort nospace plusdirs)
-  command names need: pkg install bash-completion
+bash case-insensitive completion:
+  bind 'set completion-ignore-case on'
+  shopt -s nocasematch
+  # no `complete -o nocasematch`; command names need pkg install bash-completion
+
+zsh + oh-my-zsh:
+  pkg install zsh
+  sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  chsh -s zsh          # only symlinks ~/.termux/shell; `chsh -s bash` undoes it
+  plugins: vi-mode (VI_MODE_SET_CURSOR=true), git, extract, colored-man-pages,
+    history-substring-search, zsh-autosuggestions, transient-prompt,
+    zsh-syntax-highlighting (must stay LAST)
+  custom clones: zsh-autosuggestions, zsh-syntax-highlighting,
+    olets/zsh-transient-prompt -> $ZSH_CUSTOM/plugins/transient-prompt
+  compinit/compdef are stubbed out before oh-my-zsh: no Tab completion, saves ~45ms
+    and avoids the 1.2s zcompdump rebuild. Delete the stubs to restore Tab.
+  startup ~285ms (bash ~50ms): oh-my-zsh ~240, vivid ~36, zoxide ~31, fzf ~48,
+    zsh itself 33. zsh-completions is installed but $PREFIX/share/zsh/site-functions
+    is not in fpath on Termux.
+  bash-only lines do not parse: bind, shopt, source <(fzf --bash). Use fzf --zsh and
+    zoxide init --cmd cd zsh. palette.sh is bash-only; Ctrl-Space palette is a zle
+    widget in .zshrc (^P stays history-up).
+  prompt: native 2-line, dir + git status symbols, no branch:
+    PROMPT=$'%B%F{cyan}%~%f%b $(git_prompt_status)\n%B%F{cyan}>%f%b '
+  transient prompt: set TRANSIENT_PROMPT_PROMPT / _TRANSIENT_PROMPT after PROMPT;
+    RPROMPT is the vi-mode indicator.
+  remove: rm -rf ~/.oh-my-zsh ~/.zshrc ~/.zsh_history ~/.zcompdump*
+    pkg uninstall zsh
 
 zsh + oh-my-zsh (Termux):
   pkg install zsh
