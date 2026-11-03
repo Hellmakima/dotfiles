@@ -240,3 +240,4 @@ typeset -g TRANSIENT_PROMPT_TRANSIENT_PROMPT TRANSIENT_PROMPT_TRANSIENT_RPROMPT
 
 # starship (disabled, see the PROMPT line above)
 # eval "$(starship init zsh)"
+sshd
