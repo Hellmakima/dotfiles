@@ -6,6 +6,9 @@ return {
         lua_ls = {
           enabled = false,
         },
+        clangd = {
+          mason = false,
+        },
       },
     },
   },
