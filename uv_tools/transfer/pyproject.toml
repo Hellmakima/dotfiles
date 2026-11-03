@@ -1,6 +1,6 @@
 [project]
 name = "transfer"
-version = "0.1.5"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -10,7 +10,7 @@ requires-python = ">=3.14"
 dependencies = []
 
 [project.scripts]
-transfer = "transfer:main"
+uscp = "transfer:main"
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]

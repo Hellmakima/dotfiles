@@ -37,6 +37,17 @@ def quote_remote(path):
         return '"$HOME"' + shlex.quote(path[1:])
     return shlex.quote(path)
 
+def remote_find():
+    """Mirror the local filters as a find expression, so both sides stay in sync."""
+    names = " -o ".join(f"-name {shlex.quote(d)}" for d in sorted(EXCLUDE_DIRS))
+    suffixes = " -o ".join(f"-name {shlex.quote('*' + s)}" for s in EXCLUDE_SUFFIXES)
+
+    expression = f"\\( {names} \\) -prune "
+    if suffixes:
+        expression += f"-o \\( {suffixes} \\) -prune "
+    return expression + "-o -type f -print"
+
+
 def get_files(path):
     """Collect paths recursively, excluding configured directories."""
     if not os.path.isdir(path):
@@ -55,6 +66,52 @@ def get_files(path):
     return files
 
 
+def resolve_zoxide(path, gateway):
+    """Resolve a remote path with zoxide, then confirm the match with the user.
+
+    The last "/" separates the zoxide query from the trailing file name.
+    No "/" means the whole argument is a directory query.
+    Absolute and ~ paths are passed through untouched.
+    """
+    if path.startswith(("/", "~")):
+        return path
+
+    query, _, name = path.rpartition("/")
+    if not query:
+        query, name = name, ""
+
+    script = (
+        'Z=$(command -v zoxide || echo "$PREFIX/bin/zoxide"); '
+        f'dir=$("$Z" query -- {shlex.quote(query)}) || exit 4; '
+        '[ -d "$dir" ] || exit 5; '
+    )
+    if name:
+        script += f"printf '%s/%s\\n' \"$dir\" {shlex.quote(name)}"
+    else:
+        script += "printf '%s\\n' \"$dir\""
+
+    result = subprocess.run(
+        ["ssh", "-p", PORT, f"{USER}@{gateway}", script],
+        text=True,
+        capture_output=True,
+    )
+
+    if result.returncode == 4:
+        raise SystemExit(f"uscp: zoxide has no match for {query!r}")
+    if result.returncode == 5:
+        raise SystemExit(f"uscp: zoxide match is not a directory: {query!r}")
+    if result.returncode != 0:
+        raise SystemExit(f"uscp: {result.stderr.strip() or 'ssh failed'}")
+
+    resolved = result.stdout.strip().splitlines()[-1]
+
+    print(f"uscp: {path} -> {resolved}")
+    if input("uscp: proceed? [Y/n] ").strip().lower() in {"n", "no"}:
+        raise SystemExit(0)
+
+    return resolved
+
+
 def main():
     parser = argparse.ArgumentParser(prog="uscp")
     common = argparse.ArgumentParser(add_help=False)
@@ -62,6 +119,18 @@ def main():
         "-w",
         action="store_true",
         help="Hard-set the remote IP to 192.168.29.134",
+    )
+    common.add_argument(
+        "-z",
+        "--zoxide",
+        action="store_true",
+        help="Resolve the remote path with zoxide (last / starts the file name)",
+    )
+    common.add_argument(
+        "-g",
+        "--git",
+        action="store_true",
+        help="Include .git instead of pruning it",
     )
     subparsers = parser.add_subparsers(dest="action", required=True)
 
@@ -88,6 +157,12 @@ def main():
     args = parser.parse_args()
     gateway = "192.168.29.134" if args.w else (args.ip or get_gateway())
 
+    if args.zoxide:
+        args.there = resolve_zoxide(args.there, gateway)
+
+    if not args.git:
+        EXCLUDE_DIRS.add(".git")
+
     if args.action == "give":
         for path in get_files(args.here):
             relative = os.path.relpath(path, args.here)
@@ -107,13 +182,19 @@ def main():
         command = [
             "ssh", "-p", PORT,
             f"{USER}@{gateway}",
-            f"if [ -d '{remote_path}' ]; then cd '{remote_path}' && "
-            "find . \\( -name .venv -o -name __pycache__ -o -name .ruff_cache \\) -prune "
-            "-o -name '*.pyc' -prune -o -type f -print; "
-            f"else printf '%s\\n' '{remote_path}'; fi",
+            f"if [ -d {remote_path} ]; then cd {remote_path} && find . {remote_find()}; "
+            f"elif [ -e {remote_path} ]; then printf '%s\\n' {remote_path}; "
+            "else exit 6; fi",
         ]
 
-        output = subprocess.check_output(command, text=True)
+        result = subprocess.run(command, text=True, capture_output=True)
+
+        if result.returncode == 6:
+            raise SystemExit(f"uscp: no such file or directory: {args.there}")
+        if result.returncode != 0:
+            raise SystemExit(f"uscp: {result.stderr.strip() or 'ssh failed'}")
+
+        output = result.stdout
 
         for record in output.splitlines():
             if record.startswith("./"):
