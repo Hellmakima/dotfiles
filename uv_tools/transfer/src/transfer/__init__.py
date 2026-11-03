@@ -24,6 +24,10 @@ EXCLUDE_DIRS = {
     ".ruff_cache",
 }
 
+EXCLUDE_SUFFIXES = (
+    ".pyc",
+)
+
 
 def quote_remote(path):
     """Quote a path for the remote shell, expanding a leading ~ via $HOME."""
@@ -44,6 +48,8 @@ def get_files(path):
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
 
         for filename in filenames:
+            if filename.endswith(EXCLUDE_SUFFIXES):
+                continue
             files.append(os.path.join(root, filename))
 
     return files
@@ -102,7 +108,8 @@ def main():
             "ssh", "-p", PORT,
             f"{USER}@{gateway}",
             f"if [ -d '{remote_path}' ]; then cd '{remote_path}' && "
-            "find . -path './.venv' -prune -o -type f -print; "
+            "find . \\( -name .venv -o -name __pycache__ -o -name .ruff_cache \\) -prune "
+            "-o -name '*.pyc' -prune -o -type f -print; "
             f"else printf '%s\\n' '{remote_path}'; fi",
         ]
 
