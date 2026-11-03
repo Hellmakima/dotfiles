@@ -1,4 +1,5 @@
 import argparse
+import shlex
 import subprocess
 import os
 
@@ -22,6 +23,15 @@ EXCLUDE_DIRS = {
     "__pycache__",
     ".ruff_cache",
 }
+
+
+def quote_remote(path):
+    """Quote a path for the remote shell, expanding a leading ~ via $HOME."""
+    if path == "~":
+        return '"$HOME"'
+    if path.startswith("~/"):
+        return '"$HOME"' + shlex.quote(path[1:])
+    return shlex.quote(path)
 
 def get_files(path):
     """Collect paths recursively, excluding configured directories."""
@@ -87,7 +97,7 @@ def main():
     else:
         # List files remotely: recurse for a directory, or echo the file as-is.
         raw_path = args.there.rstrip("/") or "/"
-        remote_path = raw_path.replace("'", "'\\''")
+        remote_path = quote_remote(raw_path)
         command = [
             "ssh", "-p", PORT,
             f"{USER}@{gateway}",
