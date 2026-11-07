@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "URL Source Tracker Removal",
+  "version": "1.0.0",
+  "description": "Strips share/tracking parameters (si, obrf, igsh, utm_*, fbclid, ...) from URLs before the page loads.",
+  "permissions": [
+    "declarativeNetRequest",
+    "webNavigation",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "clean-urls",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}

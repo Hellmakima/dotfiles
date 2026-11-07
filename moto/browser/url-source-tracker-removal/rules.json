@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "priority": 3,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "removeParams": [
+              "si",
+              "pp",
+              "feature",
+              "utm_source",
+              "utm_medium",
+              "utm_campaign",
+              "utm_term",
+              "utm_content",
+              "utm_id",
+              "utm_source_platform",
+              "utm_creative_format",
+              "utm_marketing_tactic",
+              "fbclid",
+              "gclid",
+              "igsh",
+              "igshid",
+              "app"
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "regexFilter": "^https?://([a-z0-9-]+\\.)*(youtube\\.com|youtube-nocookie\\.com|youtu\\.be)/",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 2,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "removeParams": [
+              "obrf",
+              "igsh",
+              "igshid",
+              "utm_source",
+              "utm_medium",
+              "utm_campaign",
+              "utm_term",
+              "utm_content",
+              "utm_id",
+              "fbclid"
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "regexFilter": "^https?://([a-z0-9-]+\\.)*instagram\\.com/",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "removeParams": [
+              "utm_source",
+              "utm_medium",
+              "utm_campaign",
+              "utm_term",
+              "utm_content",
+              "utm_id",
+              "utm_source_platform",
+              "utm_creative_format",
+              "utm_marketing_tactic",
+              "utm_referrer",
+              "fbclid",
+              "gclid",
+              "dclid",
+              "gbraid",
+              "wbraid",
+              "msclkid",
+              "twclid",
+              "yclid",
+              "igsh",
+              "igshid",
+              "mc_cid",
+              "mc_eid",
+              "_hsenc",
+              "_hsmi"
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "regexFilter": "^https?://",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]
