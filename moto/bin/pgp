@@ -1,0 +1,30 @@
+
+#!/data/data/com.termux/files/usr/bin/sh
+
+R='\033[1;31m'  # Red
+G='\033[1;32m'  # Green
+Y='\033[1;33m'  # Yellow
+B='\033[1;34m'  # Blue
+C='\033[1;36m'  # Cyan
+N='\033[0m'     # Reset
+
+printf "${C}Encrypt:${N}\n"
+printf "${G}gpg --batch --yes --pinentry-mode loopback \\\\\n"
+printf "    --passphrase 'sample' \\\\\n"
+printf "    --symmetric --cipher-algo AES256 \\\\\n"
+printf "    --set-filename '' \\\\\n"
+printf "    --no-emit-version --no-comments \\\\\n"
+printf "    <input> \\\\\n"
+printf "    -o <out.gpg>${N}\n\n"
+
+printf "${C}Decrypt:${N}\n"
+printf "${G}gpg --batch --pinentry-mode loopback \\\\\n"
+printf "    --passphrase 'sample' -d <input.gpg>${N}\n\n"
+
+printf "${Y}More:${N}\n"
+
+printf "${B}enc:${N} \$SIZE=\$(du -sb -- secret/* | awk '{s+=\$1} END {print s}')\n"
+printf "    ${N} tar -cf - -- secret/* | pv -s \"\$SIZE\" | gzip -9 | gpg ...\n"
+
+printf "${B}dcp:${N} gpg ... | tar -xzvf -\n"
+
