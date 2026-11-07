@@ -27,10 +27,11 @@ gh
 git
 hexedit
 lazygit
-mandocs
+manpages
 neovim
 openjdk-xx
 openssh
+pv
 rclone
 rust
 rust-analyzer
