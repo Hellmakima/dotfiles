@@ -1,0 +1,18 @@
+{
+  "name": "Meet Auto-Silent",
+  "description": "Mutes mic and turns camera off on every Google Meet page. (It only clicks the buttons, so might not work if you have already muted the mic or turned off the camera)",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

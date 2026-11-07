@@ -1,3 +1,5 @@
+# "\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
+
 # ===== Aliases =====
 
 function l { Get-ChildItem -Force }
@@ -54,6 +56,7 @@ function wh { (Get-Command $args[0]).Source }
 Set-PSReadLineKeyHandler -Chord "Ctrl+d" -BriefDescription "Exit on Ctrl+D" -ScriptBlock {
     [System.Environment]::Exit(0)
 }
+Set-Alias xx exit
 
 # touch for new file
 Set-Alias touch New-Item
@@ -73,4 +76,3 @@ function mk {
     # cd into it
     Set-Location $path
 }
-

@@ -1,0 +1,39 @@
+// Settings in here override those in "LSP-pyright/LSP-pyright.sublime-settings"
+
+{
+  "settings": {
+    // Disable all type checking (no type mismatch warnings)
+    "python.analysis.typeCheckingMode": "off",
+
+    // Only run diagnostics on files that are open (faster, less noise)
+    "python.analysis.diagnosticMode": "openFilesOnly",
+
+    // Mute individual diagnostics (shuts up everything except autocomplete)
+    "python.analysis.diagnosticSeverityOverrides": {
+      // No complaints about type errors in general
+      // "reportGeneralTypeIssues": "none",
+
+      // Don't warn when accessing properties on possibly None values
+      "reportOptionalMemberAccess": "none",
+
+      // Don't warn when subscripting/indexing possibly None values
+      "reportOptionalSubscript": "none",
+
+      // No warnings for importing "private" things (e.g., _some_func)
+      "reportPrivateImportUsage": "none",
+
+      // Silence warnings about unused imports
+      // "reportUnusedImport": "none",
+
+      // Silence warnings about unused variables
+      "reportUnusedVariable": "none",
+
+      // Don't show errors for missing imports (even if they’re actually missing)
+      "reportMissingImports": "none",
+
+      // Ignore unbound variable warnings (using vars before defining them)
+      // "reportUnboundVariable": "none"
+    }
+  }
+}
+

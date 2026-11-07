@@ -1,0 +1,3 @@
+JsPrettier
+Package Control
+REST Client

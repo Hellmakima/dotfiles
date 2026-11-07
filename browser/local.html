@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Localhost Navigator</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          Segoe UI,
+          Roboto,
+          Arial;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: #f6f7fb;
+      }
+      .card {
+        width: 760px;
+        background: #fff;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(20, 30, 60, 0.08);
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        margin: 8px 0;
+      }
+      label {
+        font-size: 12px;
+        color: #444;
+        margin-bottom: 6px;
+        display: block;
+      }
+      input[type="text"] {
+        /*width: 100%;*/
+        padding: 10px;
+        border: 1px solid #d7dbe8;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      .col {
+        flex: 1;
+        min-width: 0;
+      }
+      .btn {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 0;
+        background: #2b71f0;
+        color: #fff;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .btn.secondary {
+        background: #f3f4f8;
+        color: #111;
+        border: 1px solid #e1e4f0;
+      }
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .dropdown {
+        position: relative;
+      }
+      .list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 6px);
+        background: #fff;
+        border: 1px solid #e2e6f0;
+        border-radius: 8px;
+        max-height: 220px;
+        overflow: auto;
+        z-index: 50;
+        box-shadow: 0 8px 30px rgba(20, 30, 60, 0.08);
+      }
+      .item {
+        padding: 8px 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .item.active {
+        background: #eef4ff;
+      }
+      .meta {
+        font-size: 12px;
+        color: #666;
+      }
+      .small {
+        font-size: 12px;
+        color: #666;
+      }
+      .hint {
+        font-size: 12px;
+        color: #777;
+        margin-top: 8px;
+      }
+      .row-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .file-input {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" aria-live="polite">
+      <h1>Localhost Navigator</h1>
+
+      <div class="row">
+        <div class="col">
+          <label for="portInput"
+            >Port (type to filter, arrows to pick, Enter to select)</label
+          >
+          <div class="dropdown">
+            <input
+              id="portInput"
+              type="text"
+              autocomplete="off"
+              inputmode="numeric"
+              placeholder="e.g. 3000"
+            />
+            <div id="portList" class="list" hidden></div>
+          </div>
+          <div class="hint">
+            Saved ports with timestamps. Matches prefix, newest first.
+          </div>
+        </div>
+
+        <div class="col">
+          <label for="pathInput"
+            >Path (per-port memory).
+            <code>shift enter</code>
+            to open as-is</label
+          >
+          <div class="dropdown">
+            <input
+              id="pathInput"
+              type="text"
+              autocomplete="off"
+              placeholder="/api or /"
+            />
+            <div id="pathList" class="list" hidden></div>
+          </div>
+          <div class="hint">
+            Path suggestions are stored separately for each port.
+          </div>
+        </div>
+      </div>
+
+      <div class="row-buttons">
+        <!-- <button id="openBtn" class="btn">Open</button> -->
+        <button
+          id="deleteBtn"
+          class="btn secondary"
+          title="Delete all saved memory"
+        >
+          Delete All Memory 🗑
+        </button>
+        <button id="downloadBtn" class="btn secondary">
+          Download Memory ⤓
+        </button>
+        <label
+          class="btn secondary"
+          for="uploadFile"
+          id="uploadLabel"
+          style="margin-bottom: 0px"
+          >Upload Memory ↑</label
+        >
+        <input
+          id="uploadFile"
+          class="file-input"
+          type="file"
+          accept="application/json"
+        />
+        <div style="flex: 1"></div>
+      </div>
+    </div>
+
+    <script>
+      /*
+        Local data structure:
+        {
+          ports: { "3000": [{path:"/api", ts:169xxx}, ...], ... },
+          portsMeta: [{port:"3000", ts:169xxx}, ...]  // newest first
+        }
+      */
+      const STORAGE_KEY = "localhost_nav_v1";
+      const portInput = document.getElementById("portInput");
+      const pathInput = document.getElementById("pathInput");
+      const portListEl = document.getElementById("portList");
+      const pathListEl = document.getElementById("pathList");
+      // const openBtn = document.getElementById("openBtn");
+      const deleteBtn = document.getElementById("deleteBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const uploadFile = document.getElementById("uploadFile");
+      const uploadLabel = document.getElementById("uploadLabel");
+
+      function loadStore() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : { ports: {}, portsMeta: [] };
+        } catch (e) {
+          return { ports: {}, portsMeta: [] };
+        }
+      }
+      function saveStore(s) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+      }
+      function addPort(port) {
+        const s = loadStore();
+        const now = Date.now();
+        // update portsMeta: remove old, add new at front
+        s.portsMeta = (s.portsMeta || []).filter((p) => p.port !== port);
+        s.portsMeta.unshift({ port, ts: now });
+        // ensure ports object exists
+        s.ports = s.ports || {};
+        s.ports[port] = s.ports[port] || [];
+        saveStore(s);
+      }
+      function addPathForPort(port, path) {
+        path = path || "/";
+        const s = loadStore();
+        s.ports = s.ports || {};
+        s.ports[port] = s.ports[port] || [];
+        // remove existing duplicate path
+        s.ports[port] = s.ports[port].filter((e) => e.path !== path);
+        s.ports[port].unshift({ path, ts: Date.now() });
+        // also ensure port meta updated
+        s.portsMeta = (s.portsMeta || []).filter((p) => p.port !== port);
+        s.portsMeta.unshift({ port, ts: Date.now() });
+        saveStore(s);
+      }
+
+      function filterPorts(prefix) {
+        const s = loadStore();
+        const meta = s.portsMeta || [];
+        if (!prefix) return meta.map((m) => m.port);
+        return meta.map((m) => m.port).filter((p) => p.startsWith(prefix));
+      }
+
+      function getPathsForPort(port, prefix) {
+        const s = loadStore();
+        const list = s.ports && s.ports[port] ? s.ports[port] : [];
+
+        let p = prefix || "";
+
+        return list.filter((e) => e.path.includes(p)).map((e) => e.path);
+        //could be startsSith instead of includes
+      }
+
+      function formatDate(ts) {
+        const d = new Date(ts);
+        return d.toLocaleString();
+      }
+
+      /* UI rendering for port list */
+      let portItems = [];
+      let portActiveIndex = -1;
+      function showPortList(arr) {
+        portListEl.innerHTML = "";
+        portItems = [];
+        portActiveIndex = -1;
+        if (!arr || arr.length === 0) {
+          portListEl.hidden = true;
+          return;
+        }
+        const s = loadStore();
+        // arr is list of port strings in desired order (newest-first already)
+        arr.forEach((port) => {
+          const meta = (s.portsMeta || []).find((m) => m.port === port);
+          const ts = meta ? meta.ts : 0;
+          const item = document.createElement("div");
+          item.className = "item";
+          item.tabIndex = -1;
+          item.innerHTML =
+            "<div><strong>" +
+            port +
+            '</strong></div><div class="meta">' +
+            formatDate(ts) +
+            "</div>";
+          item.addEventListener("click", () => {
+            selectPort(port);
+            hidePortList();
+            portInput.focus();
+          });
+          portListEl.appendChild(item);
+          portItems.push({ el: item, port, ts });
+        });
+        portListEl.hidden = false;
+      }
+
+      /* UI for path list */
+      let pathItems = [];
+      let pathActiveIndex = -1;
+      function showPathList(paths) {
+        pathListEl.innerHTML = "";
+        pathItems = [];
+        pathActiveIndex = -1;
+        if (!paths || paths.length === 0) {
+          pathListEl.hidden = true;
+          return;
+        }
+        const s = loadStore();
+        paths.forEach((path) => {
+          const entry =
+            s.ports && s.ports[portInput.value]
+              ? s.ports[portInput.value].find((p) => p.path === path) || {}
+              : {};
+          const ts = entry.ts || 0;
+          const item = document.createElement("div");
+          item.className = "item";
+          item.tabIndex = -1;
+          item.innerHTML =
+            "<div><strong>" +
+            path +
+            '</strong></div><div class="meta">' +
+            (ts ? formatDate(ts) : "") +
+            "</div>";
+          item.addEventListener("click", () => {
+            selectPath(path);
+            hidePathList();
+            pathInput.focus();
+          });
+          pathListEl.appendChild(item);
+          pathItems.push({ el: item, path, ts });
+        });
+        pathListEl.hidden = false;
+      }
+
+      function hidePortList() {
+        portListEl.hidden = true;
+        portActiveIndex = -1;
+        updatePortActive();
+      }
+      function hidePathList() {
+        pathListEl.hidden = true;
+        pathActiveIndex = -1;
+        updatePathActive();
+      }
+
+      function updatePortActive() {
+        portItems.forEach((it, i) =>
+          it.el.classList.toggle("active", i === portActiveIndex),
+        );
+      }
+      function updatePathActive() {
+        pathItems.forEach((it, i) =>
+          it.el.classList.toggle("active", i === pathActiveIndex),
+        );
+      }
+
+      function selectPort(p) {
+        portInput.value = p;
+        // when port selected, populate path suggestions for that port
+        const topPaths = getPathsForPort(p, "");
+        showPathList(topPaths);
+      }
+
+      function selectPath(path) {
+        pathInput.value = path;
+      }
+
+      /* keyboard handlers for port input */
+      portInput.addEventListener("input", (e) => {
+        const v = portInput.value.trim();
+        const matches = filterPorts(v);
+        showPortList(matches);
+        if (matches.length > 0) {
+          portActiveIndex = 0;
+          updatePortActive();
+        }
+      });
+
+      portInput.addEventListener("keydown", (e) => {
+        if (portListEl.hidden) {
+          if (e.key === "Enter") {
+            // if no suggestion, accept typed port
+            if (portInput.value.trim()) addPort(portInput.value.trim());
+            pathInput.focus();
+            e.preventDefault();
+          }
+          return;
+        }
+        if (e.key === "ArrowDown") {
+          portActiveIndex = Math.min(portItems.length - 1, portActiveIndex + 1);
+          updatePortActive();
+          e.preventDefault();
+        } else if (e.key === "ArrowUp") {
+          portActiveIndex = Math.max(0, portActiveIndex - 1);
+          updatePortActive();
+          e.preventDefault();
+        } else if (e.key === "Enter") {
+          if (portActiveIndex >= 0 && portItems[portActiveIndex]) {
+            selectPort(portItems[portActiveIndex].port);
+          } else if (portInput.value.trim()) {
+            addPort(portInput.value.trim());
+          }
+          hidePortList();
+          pathInput.focus();
+          e.preventDefault();
+        } else if (e.key === "Escape") {
+          hidePortList();
+        }
+      });
+
+      pathInput.addEventListener("input", (e) => {
+        const port = portInput.value.trim();
+        const v = pathInput.value;
+        if (!port) {
+          hidePathList();
+          return;
+        }
+        const matches = getPathsForPort(port, v);
+        showPathList(matches);
+        if (matches.length > 0) {
+          pathActiveIndex = 0;
+          updatePathActive();
+        }
+      });
+
+      pathInput.addEventListener("keydown", (e) => {
+        // shift+enter = use typed text only
+        if (e.key === "Enter" && e.shiftKey) {
+          hidePathList();
+          triggerOpen();
+          e.preventDefault();
+          return;
+        }
+
+        // if dropdown hidden, plain enter opens normally
+        if (pathListEl.hidden) {
+          if (e.key === "Enter") {
+            triggerOpen();
+            e.preventDefault();
+          }
+          return;
+        }
+
+        if (e.key === "ArrowDown") {
+          pathActiveIndex = Math.min(pathItems.length - 1, pathActiveIndex + 1);
+          updatePathActive();
+          e.preventDefault();
+        } else if (e.key === "ArrowUp") {
+          pathActiveIndex = Math.max(0, pathActiveIndex - 1);
+          updatePathActive();
+          e.preventDefault();
+        } else if (e.key === "Enter") {
+          if (pathActiveIndex >= 0 && pathItems[pathActiveIndex]) {
+            selectPath(pathItems[pathActiveIndex].path);
+          }
+          hidePathList();
+          triggerOpen();
+          e.preventDefault();
+        } else if (e.key === "Escape") {
+          hidePathList();
+        }
+      });
+
+      /* Open behavior */
+      function triggerOpen() {
+        const port = portInput.value.trim();
+        if (!port) {
+          portInput.focus();
+          return;
+        }
+        let path = pathInput.value.trim();
+        if (!path) path = "/";
+        // normalize path
+        if (!path.startsWith("/")) path = "/" + path;
+        addPort(port);
+        addPathForPort(port, path);
+        const url = "http://localhost:" + port + path;
+        // window.open(url, "_blank");
+        window.location.href = url;
+      }
+
+      /* Buttons */
+      // openBtn.addEventListener("click", triggerOpen);
+      deleteBtn.addEventListener("click", () => {
+        if (!confirm("Delete all saved memory?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        hidePortList();
+        hidePathList();
+        portInput.value = "";
+        pathInput.value = "";
+        alert("Memory deleted");
+      });
+      downloadBtn.addEventListener("click", () => {
+        const s = loadStore();
+        const blob = new Blob([JSON.stringify(s, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "localhost-nav.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+      uploadFile.addEventListener("change", async (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        try {
+          const text = await f.text();
+          const parsed = JSON.parse(text);
+          if (!confirm("Upload will replace existing memory. Continue?")) {
+            uploadFile.value = "";
+            return;
+          }
+          saveStore(parsed);
+          alert("Memory uploaded");
+          uploadFile.value = "";
+        } catch (err) {
+          alert("Invalid file");
+          uploadFile.value = "";
+        }
+      });
+
+      /* click outside to hide dropdowns */
+      document.addEventListener("click", (e) => {
+        if (!portListEl.contains(e.target) && e.target !== portInput)
+          hidePortList();
+        if (!pathListEl.contains(e.target) && e.target !== pathInput)
+          hidePathList();
+      });
+
+      /* init */
+      window.addEventListener("load", () => {
+        portInput.focus();
+        // show most recent ports
+        const s = loadStore();
+        const recent = (s.portsMeta || []).map((m) => m.port);
+        if (recent.length) showPortList(recent);
+      });
+    </script>
+  </body>
+</html>

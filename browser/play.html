@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MP3</title>
+  <!-- Tailwind CDN (playground) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='90' font-size='90'>🎧</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-4xl bg-slate-800 rounded-xl shadow-lg p-6">
+    <header class="flex items-center justify-between mb-4">
+      <h1 class="text-xl font-semibold">Local MP3 Queue Player</h1>
+      <div class="flex gap-3 items-center">
+        <label class="cursor-pointer inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded">
+          <input id="folderInput" type="file" webkitdirectory directory multiple class="hidden">
+          <span class="text-sm">Choose folder</span>
+        </label>
+        <button id="clearBtn" class="px-3 py-2 bg-slate-700 rounded hover:bg-slate-600 text-sm">Clear</button>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Player -->
+      <section class="md:col-span-2 bg-slate-700 p-4 rounded">
+        <div class="mb-4">
+          <div id="nowPlaying" class="text-sm text-slate-300">No track loaded</div>
+          <div id="trackTitle" class="text-lg font-medium mt-1">—</div>
+        </div>
+
+        <div class="flex items-center gap-3 mb-2">
+          <button id="prevBtn" class="px-3 py-2 bg-slate-600 rounded hover:bg-slate-500">Prev</button>
+          <button id="playBtn" class="px-4 py-2 bg-green-600 rounded hover:bg-green-500">Play</button>
+          <button id="nextBtn" class="px-3 py-2 bg-slate-600 rounded hover:bg-slate-500">Next</button>
+
+          <div class="ml-auto flex items-center gap-3">
+            <label class="text-sm text-slate-300">Volume</label>
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="1" class="w-36">
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <div id="progressBar" class="relative h-3 bg-slate-600 rounded cursor-pointer" title="Seek">
+            <div id="progress" class="absolute left-0 top-0 h-3 bg-green-500 rounded" style="width:0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-slate-300 mt-1">
+            <span id="currentTime">00:00</span>
+            <span id="duration">00:00</span>
+          </div>
+        </div>
+
+        <div class="mt-3 text-xs text-slate-300">
+          <label class="inline-flex items-center gap-2">
+            <input id="autoplayNext" type="checkbox" checked class="rounded bg-slate-600">
+            <span>Auto-play next</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Playlist -->
+      <aside class="bg-slate-700 p-4 rounded max-h-[60vh] overflow-auto">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold text-sm">Playlist</h2>
+          <div class="text-xs text-slate-300" id="count">0</div>
+        </div>
+
+        <ul id="playlist" class="space-y-2"></ul>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Strict ASCII-only comments and code
+    const folderInput = document.getElementById('folderInput');
+    const playlistEl = document.getElementById('playlist');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const trackTitle = document.getElementById('trackTitle');
+    const nowPlaying = document.getElementById('nowPlaying');
+    const progress = document.getElementById('progress');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const volumeEl = document.getElementById('volume');
+    const countEl = document.getElementById('count');
+    const autoplayNext = document.getElementById('autoplayNext');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let audio = new Audio();
+    audio.preload = 'metadata';
+
+    // Handle system media keys
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        audio.play();
+        isPlaying = true;
+        playBtn.textContent = 'Pause';
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        audio.pause();
+        isPlaying = false;
+        playBtn.textContent = 'Play';
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        prevBtn.click();
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        nextBtn.click();
+      });
+    }
+
+    let queue = [];
+    let currentIndex = -1;
+    let isPlaying = false;
+
+    function formatTime(s) {
+      if (!isFinite(s)) return '00:00';
+      const m = Math.floor(s / 60).toString().padStart(2, '0');
+      const sec = Math.floor(s % 60).toString().padStart(2, '0');
+      return m + ':' + sec;
+    }
+
+    function renderPlaylist() {
+      playlistEl.innerHTML = '';
+      queue.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between bg-slate-600 p-2 rounded hover:bg-slate-500';
+        li.innerHTML = `
+          <div class="truncate mr-3">
+            <div class="font-medium text-sm">${escapeHtml(item.name)}</div>
+            <div class="text-xs text-slate-300">${escapeHtml(item.path)}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="play_single text-xs px-2 py-1 bg-slate-700 rounded">Play</button>
+            <button class="remove text-xs px-2 py-1 bg-red-600 rounded">X</button>
+          </div>
+        `;
+        // click handlers
+        li.querySelector('.play_single').addEventListener('click', () => {
+          playIndex(idx);
+        });
+        li.querySelector('.remove').addEventListener('click', () => {
+          removeIndex(idx);
+        });
+        // highlight current
+        if (idx === currentIndex) {
+          li.classList.add('ring-2', 'ring-green-500');
+        }
+        playlistEl.appendChild(li);
+      });
+      countEl.textContent = queue.length;
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"'\/]/g, function (s) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '/': '&#x2F;'};
+        return map[s];
+      });
+    }
+
+    function playIndex(idx) {
+      if (idx < 0 || idx >= queue.length) return;
+      const item = queue[idx];
+      currentIndex = idx;
+      audio.src = item.url;
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: item.name,
+          artist: 'Local File',
+          album: 'Local Folder',
+        });
+      }
+      trackTitle.textContent = item.name;
+      nowPlaying.textContent = 'Now playing';
+      audio.play().then(() => {
+        isPlaying = true;
+        playBtn.textContent = 'Pause';
+        renderPlaylist();
+      }).catch(err => {
+        console.error('play error', err);
+      });
+    }
+
+    function removeIndex(idx) {
+      // revoke object URL to free memory
+      URL.revokeObjectURL(queue[idx].url);
+      queue.splice(idx, 1);
+      if (idx === currentIndex) {
+        // if removed current, try to play same index (now next item)
+        if (queue.length === 0) {
+          audio.pause();
+          audio.src = '';
+          currentIndex = -1;
+          isPlaying = false;
+          playBtn.textContent = 'Play';
+          trackTitle.textContent = '—';
+          nowPlaying.textContent = 'No track loaded';
+        } else {
+          playIndex(idx % queue.length);
+        }
+      } else if (idx < currentIndex) {
+        currentIndex--;
+      }
+      renderPlaylist();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (!audio.src) {
+        if (queue.length) {
+          playIndex(0);
+        }
+        return;
+      }
+      if (isPlaying) {
+        audio.pause();
+        playBtn.textContent = 'Play';
+        isPlaying = false;
+      } else {
+        audio.play();
+        playBtn.textContent = 'Pause';
+        isPlaying = true;
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (queue.length === 0) return;
+      let idx = currentIndex - 1;
+      if (idx < 0) idx = queue.length - 1;
+      playIndex(idx);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (queue.length === 0) return;
+      let idx = currentIndex + 1;
+      if (idx >= queue.length) idx = 0;
+      playIndex(idx);
+    });
+
+    audio.addEventListener('ended', () => {
+      if (!autoplayNext.checked) {
+        isPlaying = false;
+        playBtn.textContent = 'Play';
+        return;
+      }
+      if (queue.length === 0) return;
+      let idx = currentIndex + 1;
+      if (idx >= queue.length) {
+        // stop at end instead of looping? keep looping to start
+        idx = 0;
+      }
+      playIndex(idx);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = pct + '%';
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+      durationEl.textContent = formatTime(audio.duration);
+    });
+
+    progressBar.addEventListener('click', (ev) => {
+      if (!audio.duration) return;
+      const rect = progressBar.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const pct = x / rect.width;
+      audio.currentTime = pct * audio.duration;
+    });
+
+    volumeEl.addEventListener('input', () => {
+      audio.volume = Number(volumeEl.value);
+    });
+
+    // pick folder and read mp3 files
+    folderInput.addEventListener('change', (ev) => {
+      const files = Array.from(ev.target.files || []);
+      // filter mp3 by extension and type
+      const mp3s = files.filter(f => {
+        const name = f.name.toLowerCase();
+        return name.endsWith('.mp3') || f.type === 'audio/mpeg';
+      }).sort((a,b) => a.name.localeCompare(b.name));
+
+      // clear previous queue and revoke URLs
+      queue.forEach(q => URL.revokeObjectURL(q.url));
+      queue = mp3s.map(f => ({
+        name: f.name,
+        path: f.webkitRelativePath || f.name,
+        url: URL.createObjectURL(f),
+      }));
+
+      currentIndex = -1;
+      renderPlaylist();
+
+      // optional: auto-play first
+      if (queue.length) {
+        playIndex(0);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      queue.forEach(q => URL.revokeObjectURL(q.url));
+      queue = [];
+      currentIndex = -1;
+      audio.pause();
+      audio.src = '';
+      isPlaying = false;
+      playBtn.textContent = 'Play';
+      trackTitle.textContent = '—';
+      nowPlaying.textContent = 'No track loaded';
+      renderPlaylist();
+      folderInput.value = '';
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!audio.src) return;
+
+      switch(e.key) {
+        case 'ArrowRight':
+          audio.currentTime = Math.min(audio.currentTime + 5, audio.duration || audio.currentTime + 5);
+          break;
+        case 'ArrowLeft':
+          audio.currentTime = Math.max(audio.currentTime - 5, 0);
+          break;
+      }
+    });
+
+    // helper: drag and drop files onto playlist
+    ;(function enableDragDrop(){
+      const container = document.querySelector('.bg-slate-800');
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dtFiles = Array.from(e.dataTransfer.files || []);
+        const mp3s = dtFiles.filter(f => f.name.toLowerCase().endsWith('.mp3'));
+        const mapped = mp3s.map(f => ({
+          name: f.name,
+          path: f.name,
+          url: URL.createObjectURL(f),
+        }));
+        queue = queue.concat(mapped);
+        renderPlaylist();
+      });
+    })();
+  </script>
+</body>
+</html>

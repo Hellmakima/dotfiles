@@ -1,0 +1,110 @@
+# reddit popups
+reddit.com##div[slot="content"].max-w-\[360px\]
+reddit.com##div[id="right-sidebar-container"]
+reddit.com##faceplate-hovercard > div[slot="content"]
+# nsfw searches
+reddit.com##faceplate-expandable-section-helper > details
+
+# yt ui
+youtube.com##.ytp-gradient-top
+youtube.com##.ytp-gradient-bottom
+# removes title from player
+youtube.com##.ytp-chrome-top
+youtube.com##ytd-topbar-logo-renderer:style(background: white !important;)
+# make progress bar black
+youtube.com##.ytp-swatch-background-color:style(background-color: white !important;)
+youtube.com##.ytp-swatch-background-color:style(background-image: none !important;)
+# watermark
+youtube.com##.annotation.annotation-type-custom.iv-branding
+# suggested cards
+# youtube.com##.ytp-button.ytp-cards-button
+www.youtube.com###logo
+# reels meta data
+youtube.com##yt-reel-metapanel-view-model
+
+
+# quran scroll
+!quran.com##+js(set-constant, window.scrollTo, noopFunc)
+!quran.com##+js(set-constant, Element.prototype.scrollIntoView, noopFunc)
+!quran.com##+js(set-constant, window.setInterval, noopFunc)
+
+! 31 May 2025 https://www.instagram.com
+www.instagram.com##.x6bx242.x3hkoc4.x13vifvy.x1dr59a3
+www.instagram.com##.xfk6m8.xkhd6sd.xwib8y2.x4uap5.x1y1aw1k.x1rohswg.x1n2onr6.x10wlt62.xw2csxc.x5yr21d.x1q0g3np.x78zum5.x1qjc9v5
+www.instagram.com##.xh8yej3.x11njtxf.x1n2onr6.x5yr21d.xk390pu.xln7xf2.xdt5ytf.x78zum5.x9f619.x1qjc9v5
+www.instagram.com##.xixxii4.x1a87ojn.x3h4tne.x1nhvcw1.x1oa3qoh.x1qjc9v5.xqjyukv.xdt5ytf.x2lah0s.x1c4vz4f.xryxfnj.x1plvlek.xo71vjh.x5pf9jr.x13lgxp2.x168nmei.x78zum5.xjbqb8w.x9f619 > .x1qrby5j.x7ja8zs.x1t2pt76.x1lytzrv.xedcshv.xarpa2k.x3igimt.x12ejxvf.xaigb6o.x1beo9mf.xv2umb2.x1jfb8zj.x1h9r5lt.x1h91t0o.x4k7w5x.x1vvkbs.x16tdsg8.x1hl2dhg.xkhd6sd.x18d9i69.x4uap5.xexx8yu.x1mh8g0r.xat24cr.x11i5rnm.xdj266r.html-span
+
+! 19 Jul 2025 https://www.instagram.com
+www.instagram.com##.xed3198.x1kylhsf.x4yb96v.xysibl7.x1ddxa5k.xf7dkkf.xv54qhq.xnnlda6.xpilrb4.xso031l.x1lun4ml.x178xt8z.xly64p6.xdwr3uu.x10qfohq.x6zsckl.x1n2onr6.xl56j7k.x3nfvp2.x1w60jca.x1t7ytsu.x1q0q8m5.x18b5jzi.x13fuv20.x1o29io0.xvhwddo.x11ppq56.x1ss9elp.x7r02ix.x6s0dn4.x1a2a7pz.x1lku1pv.x87ps6o.x1q0g3np.x1t137rt.x1ja2u2z.xggy1nq.x1hl2dhg.x16tdsg8.x18d9i69.xexx8yu.xeuugli.x2lwn1j.x1lziwak.xat24cr.x14z9mp.xdj266r.xe8uvvx.x2lah0s.xdl72j9.x1ypdohk.x9f619.x1i10hfl
+
+
+! 31 Jul 2025 https://stackoverflow.com
+stackoverflow.com##.vertical-align-content.ot-wo-title.ot-bottom-left.otFloatingRoundedCorner
+
+! 27 Aug 2025 https://www.google.com
+www.google.com##.C6AK7c.XVMlrc > .mXwfNd
+
+! 31 May 2025 https://www.instagram.com
+www.instagram.com##.x6bx242.x3hkoc4.x13vifvy.x1dr59a3
+www.instagram.com##.xfk6m8.xkhd6sd.xwib8y2.x4uap5.x1y1aw1k.x1rohswg.x1n2onr6.x10wlt62.xw2csxc.x5yr21d.x1q0g3np.x78zum5.x1qjc9v5
+www.instagram.com##.xh8yej3.x11njtxf.x1n2onr6.x5yr21d.xk390pu.xln7xf2.xdt5ytf.x78zum5.x9f619.x1qjc9v5
+www.instagram.com##.xixxii4.x1a87ojn.x3h4tne.x1nhvcw1.x1oa3qoh.x1qjc9v5.xqjyukv.xdt5ytf.x2lah0s.x1c4vz4f.xryxfnj.x1plvlek.xo71vjh.x5pf9jr.x13lgxp2.x168nmei.x78zum5.xjbqb8w.x9f619 > .x1qrby5j.x7ja8zs.x1t2pt76.x1lytzrv.xedcshv.xarpa2k.x3igimt.x12ejxvf.xaigb6o.x1beo9mf.xv2umb2.x1jfb8zj.x1h9r5lt.x1h91t0o.x4k7w5x.x1vvkbs.x16tdsg8.x1hl2dhg.xkhd6sd.x18d9i69.x4uap5.xexx8yu.x1mh8g0r.xat24cr.x11i5rnm.xdj266r.html-span
+www.instagram.com##.xed3198.x1kylhsf.x4yb96v.xysibl7.x1ddxa5k.xf7dkkf.xv54qhq.xnnlda6.xpilrb4.xso031l.x1lun4ml.x178xt8z.xly64p6.xdwr3uu.x10qfohq.x6zsckl.x1n2onr6.xl56j7k.x3nfvp2.x1w60jca.x1t7ytsu.x1q0q8m5.x18b5jzi.x13fuv20.x1o29io0.xvhwddo.x11ppq56.x1ss9elp.x7r02ix.x6s0dn4.x1a2a7pz.x1lku1pv.x87ps6o.x1q0g3np.x1t137rt.x1ja2u2z.xggy1nq.x1hl2dhg.x16tdsg8.x18d9i69.xexx8yu.xeuugli.x2lwn1j.x1lziwak.xat24cr.x14z9mp.xdj266r.xe8uvvx.x2lah0s.xdl72j9.x1ypdohk.x9f619.x1i10hfl
+
+
+! Jun 11, 2025 https://meet.google.com
+# "are you speaking?" popup
+meet.google.com##.bifLQe
+meet.google.com##.YajdLd.nulMpf.Dx8PDb.Ssc6Id
+# unwanted pfp
+||lh3.googleusercontent.com/a/ACg8ocK5Il5RetTBsktbIAor_rvLWju5dKUN-8EleSpNWO9pZQggcn5s=s200-p-k-no-mo$image
+
+! Sep 4, 2025 https://app.apollo.io
+app.apollo.io##.zp_CT6y0
+app.apollo.io##.zp_SK7zj
+app.apollo.io##.zp_WxA9_
+app.apollo.io##.zp_c2nwk
+app.apollo.io##.zp_E92eI
+app.apollo.io##.zp_rhCaT
+app.apollo.io##.zp_EFRzP.apolloio-css-vars-reset.zp.zp_GK6jX
+
+! GPT
+# conv witdth
+chatgpt.com##.max-w-\(--thread-content-max-width\):style(max-width: none !important;)
+# chatgpt.com##div.flex.flex-col.text-sm.thread-xl\:pt-header-height.pb-25:style(padding-bottom: 0 !important;)
+# chatgpt.com###page-header > div.items-center.flex > .focus-visible\:outline-none.whitespace-nowrap.font-normal.focus-visible\:bg-token-surface-hover.hover\:bg-token-surface-hover.text-lg.px-2\.5.touch\:min-h-10.min-h-9.rounded-lg.gap-1.items-center.justify-center.cursor-pointer.flex.group
+# footer
+# chatgpt.com##.md\:px-\[60px\].\[view-transition-name\:var\(--vt-disclaimer\)\].text-xs.text-center.p-2.justify-center.items-center.w-full.min-h-8.flex.mt-auto.relative.text-token-text-secondary
+# limit hit
+chatgpt.com##.pt-2.gap-3\.5.flex-col.flex.mb-2
+# important to keep the page in view
+chatgpt.com##[scrollbar-gutter="stable both-edges"]:style(scrollbar-gutter: none !important;)
+# share
+# chatgpt.com##.mx-2.text-token-text-primary.btn-ghost.relative.btn
+# user prompt width
+
+
+! Remove max-width on Gemini chat container
+gemini.google.com/app##.conversation-container:style(max-width: none !important; width: 100% !important; margin: 0 !important;)
+
+! Oct 17, 2025 https://meet.google.com
+||lh3.googleusercontent.com/a/ACg8ocK5Il5RetTBsktbIAor_rvLWju5dKUN-8EleSpNWO9pZQggcn5s=s200-p-k-no-mo$image
+
+! Oct 24, 2025 https://chatgpt.com
+# chatgpt.com##.rtl\:translate-x-1\/2.ltr\:-translate-x-1\/2
+
+! Oct 25, 2025 https://chatgpt.com
+chatgpt.com##.md\:px-\[60px\].\[view-transition-name\:var\(--vt-disclaimer\)\].text-xs.text-center.p-2.justify-center.items-center.w-full.min-h-8.flex.mt-auto.relative.text-token-text-secondary > .pointer-events-auto
+
+! Oct 25, 2025 https://dev.indooroutdoor.io
+dev.indooroutdoor.io##.dark\:text-slate-300.dark\:bg-slate-800.dark\:border-white.shadow-lg.text-slate-800.p-4.bg-white.border-slate-300.border.rounded-lg.items-center.flex-row.flex
+
+||https://moxnvwhuxobtszhwxmxs.supabase.co/storage/v1/object/public/Images%20For%20App/Adventures.png^
+||https://moxnvwhuxobtszhwxmxs.supabase.co/rest/v1/admin_pulse_deliveries^
+||https://moxnvwhuxobtszhwxmxs.supabase.co/rest/v1/daily_pulse_notes^
+
+! 25 Apr 2026 https://chatgpt.com
+chatgpt.com##.overflow-x-hidden.gap-3.justify-center.items-center.flex > .shrink-0
+
+! 26 Apr 2026 https://chatgpt.com
+chatgpt.com##.p-2.justify-center.items-center.w-full.min-h-8.flex.data-has-range-start\:select-auto.active\:select-auto.select-none

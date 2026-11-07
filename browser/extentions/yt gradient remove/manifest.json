@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "My YouTube UI",
+  "version": "1.0",
+  "description": "Deletes topbar and top and bottom gradients on YouTube.",
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["scripting"]
+}

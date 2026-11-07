@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Instagram Reel Controls",
+  "version": "1.0",
+  "description": "Control Instagram reels with keyboard shortcuts",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_title": "Instagram Reel Controls"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.instagram.com/reel/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

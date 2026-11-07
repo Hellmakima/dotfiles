@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Link Hover Preview",
+  "version": "1.0",
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "toggle-preview": {
+      "suggested_key": {
+        "default": "Alt+P"
+      },
+      "description": "Toggle link hover preview mode"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+<snippet>
+	<content><![CDATA[
+from collections import deque
+
+class ${1:TreeNode}:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+    @staticmethod
+    def from_list(values):
+        if not values: return None
+        root = ${1:TreeNode}(values[0])
+        queue = deque([root])
+        index = 1
+        while queue and index < len(values):
+            node = queue.popleft()
+            if values[index] is not None:
+                node.left = ${1:TreeNode}(values[index])
+                queue.append(node.left)
+            index += 1
+            if index < len(values) and values[index] is not None:
+                node.right = ${1:TreeNode}(values[index])
+                queue.append(node.right)
+            index += 1
+        return root
+
+    @staticmethod
+    def print_tree_sideways(root, level=0):
+        if root is None: return
+        ${1:TreeNode}.print_tree_sideways(root.right, level + 1)
+        post = ':'
+        if root.left and root.right: post = '<'
+        if not root.left and root.right: post = '/'
+        if root.left and not root.right: post = '\\\\'
+        print(" " * (level * 4) + str(root.val) + post)
+        ${1:TreeNode}.print_tree_sideways(root.left, level + 1)
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>tree</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.python</scope>
+</snippet>

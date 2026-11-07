@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer</title>
+    <link rel="icon" type="image/svg+xml"
+        href='data:image/svg+xml,<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="black"><path d="M6.345 5h2.1v6.533H6.993l.055-5.31-1.774 5.31H4.072l-1.805-5.31c.04.644.06 5.31.06 5.31H1V5h2.156s1.528 4.493 1.577 4.807L6.345 5zm6.71 3.617v-3.5H11.11v3.5H9.166l2.917 2.916L15 8.617h-1.945z"/></svg>'>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.css">
+    <!-- Add highlight.js for syntax highlighting -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: cursive;
+            margin: 0;
+            padding: 20px;
+            color: #fff;
+            background-color: #111;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Phone styles */
+        @media (max-width: 700px) {
+            body {
+                padding: 0px;
+                padding-top: 10px;
+            }
+
+            .container {
+                padding: 0px;
+            }
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Font selector styles */
+        .font-selector {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            font-family: cursive;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        /* Font options - made more specific to override github-markdown.css */
+        .markdown-body.font-arial,
+        .markdown-body.font-arial * {
+            font-family: Arial, sans-serif !important;
+        }
+
+        .markdown-body.font-cursive,
+        .markdown-body.font-cursive * {
+            font-family: cursive !important;
+        }
+
+        .markdown-body.font-monospace,
+        .markdown-body.font-monospace * {
+            font-family: monospace !important;
+        }
+
+        .markdown-body.font-serif,
+        .markdown-body.font-serif * {
+            font-family: Georgia, serif !important;
+        }
+
+        .markdown-body.font-comic,
+        .markdown-body.font-comic * {
+            font-family: "Comic Sans MS", cursive !important;
+        }
+
+        .file-input,
+        .text-input {
+            color: #fff;
+            background-color: #111;
+            height: 150px;
+            width: 97.5%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .markdown-body {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .markdown-body hr {
+            height: 3px;
+        }
+
+        .drag-drop-box {
+            color: #007bff;
+            border: 2px dashed #007bff;
+            padding: 20px;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .drag-drop-box.dragover {
+            background-color: #f0f0f0;
+        }
+
+        .confirm-box {
+            font-family: cursive;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .confirm-box button {
+            font-family: cursive;
+            margin-right: 10px;
+            border: none;
+        }
+
+        .confirm-box button:hover {
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .mermaid svg {
+            background-color: #555 !important;
+            border-radius: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        [id^="mermaid-"] .messageText {
+            fill: white !important;
+        }
+
+        [id^="mermaid-"] .messageLine0 {
+            stroke: white !important;
+            stroke-width: 2px !important;
+            stroke-dasharray: 5, 5;
+        }
+
+        [id^="mermaid-"] #arrowhead path {
+            fill: white !important;
+            stroke: white !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-container">
+            <h1>Markdown Viewer</h1>
+            <select id="font-selector" class="font-selector" style="font-family: inherit;">
+                <option value="font-cursive" style="font-family: cursive;">Cursive</option>
+                <option value="font-arial" style="font-family: Arial, sans-serif;">Arial</option>
+                <option value="font-monospace" style="font-family: monospace;">Monospace</option>
+                <option value="font-serif" style="font-family: serif;">Serif</option>
+                <option value="font-comic" style="font-family: 'Comic Sans MS', cursive, sans-serif;">Comic Sans
+                </option>
+            </select>
+
+        </div>
+
+        <div id="drag-drop-box" class="drag-drop-box">
+            Drag and drop a .md or .txt file here
+        </div>
+
+        <input type="file" id="file-input" accept=".md, .txt" class="file-input" style="display: none;" />
+
+        <textarea id="text-input" class="text-input" placeholder="Enter your Markdown here"></textarea>
+        <div id="content" class="markdown-body font-cursive"></div>
+    </div>
+
+    <script>
+        // Initialize with cursive font
+        document.querySelector('.markdown-body').classList.add('font-cursive');
+
+        // Font selector functionality
+        document.getElementById('font-selector').addEventListener('change', function () {
+            const markdownBody = document.querySelector('.markdown-body');
+            // Remove all font classes
+            markdownBody.classList.remove(
+                'font-arial',
+                'font-cursive',
+                'font-monospace',
+                'font-serif',
+                'font-comic'
+            );
+            // Add the selected class
+            markdownBody.classList.add(this.value);
+        });
+
+        function readFile(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const content = event.target.result;
+                document.title = 'Markdown Viewer: ' + file.name;
+
+                // Supported code file extensions
+                const codeExtensions = ['.py', '.java', '.c', '.cpp', '.css', '.js', '.html', '.php', '.rb', '.go', '.rs'];
+                const isCodeFile = codeExtensions.some(ext => file.name.endsWith(ext));
+                let processedContent = content;
+                let markdownContent = content;
+
+                if (isCodeFile) {
+                    // Get file extension for syntax highlighting
+                    const extension = file.name.split('.').pop();
+                    // Create markdown code block with language identifier
+                    markdownContent = '```' + extension + '\n' + content + '\n```';
+                    // Store both original and processed content
+                    processedContent = markdownContent;
+                    // Set the dropdown value
+                    document.getElementById('font-selector').value = 'font-monospace';
+                    // Change font to monospace
+                    const markdownBody = document.querySelector('.markdown-body');
+                    // Remove all font classes
+                    markdownBody.classList.remove(
+                        'font-arial',
+                        'font-cursive',
+                        'font-serif',
+                        'font-comic'
+                    );
+                    // Add the selected class
+                    markdownBody.classList.add('font-monospace');
+                }
+
+                // Update textarea with processed content
+                const textarea = document.getElementById('text-input');
+                textarea.value = processedContent;
+
+                // Trigger input event to ensure rendering
+                const inputEvent = new Event('input', {
+                    bubbles: true,
+                    cancelable: true,
+                });
+                textarea.dispatchEvent(inputEvent);
+
+                // Also directly render for immediate display
+                try {
+                    const htmlContent = marked.parse(markdownContent);
+                    document.getElementById('content').innerHTML = htmlContent;
+                    // Apply syntax highlighting
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                } catch (e) {
+                    document.getElementById('content').innerHTML =
+                        `<pre style="white-space: pre-wrap; color: #eee;">${escapeHtml(content)}</pre>`;
+                }
+            };
+            reader.readAsText(file);
+        }
+
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function renderMarkdown(markdownText) {
+            const mermaidProcessed = markdownText.replace(/```mermaid\s*([\s\S]*?)```/g, (_, code) => {
+                // remove empty lines
+                let cleanedCode = code.split('\n')
+                    .filter(line =>
+                        line.trim() !== ''          // remove empty lines
+                        // && !/activate/i.test(line)       // remove lines with 'activate'
+                    )
+                    .join('\n');
+                cleanedCode = cleanedCode.replace(/;/g, ',');
+
+                try {
+                    // Try to render Mermaid code wrapped in div
+                    return `<div class="mermaid">${cleanedCode}</div>`;
+                } catch (err) {
+                    console.error("Mermaid render error:", err);
+                    // Fallback: render raw markdown syntax so user sees the code
+                    return `<pre><code class="language-mermaid">${cleanedCode}</code></pre>`;
+                }
+            });
+
+            // Remove empty lines inside <html>...</html> blocks
+            const htmlCleaned = mermaidProcessed.replace(/<html>([\s\S]*?)<\/html>/gi, (_, htmlBlock) => {
+                const cleaned = htmlBlock
+                    .split(/\r?\n/)
+                    .filter(line => line.trim() !== '')
+                    .join('\n');
+                return `<html>\n${cleaned}\n</html>`;
+            });
+
+            // Render markdown
+            const htmlContent = marked.parse(htmlCleaned);
+            document.getElementById('content').innerHTML = htmlContent;
+
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+
+            // Mermaid render with error handling
+            try {
+                if (document.querySelector('.mermaid')) {
+                    mermaid.initialize({ startOnLoad: false });
+                    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                }
+            } catch (err) {
+                console.error("Mermaid initialization error:", err);
+                // Optionally skip rendering, so raw code remains visible
+            }
+        }
+
+
+
+        document.getElementById('file-input').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                readFile(file);
+            }
+        });
+
+        document.getElementById('text-input').addEventListener('input', function (event) {
+            const markdownText = event.target.value;
+            renderMarkdown(markdownText);
+        });
+
+        const dragDropBox = document.getElementById('drag-drop-box');
+
+        dragDropBox.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            dragDropBox.classList.add('dragover');
+        });
+
+        dragDropBox.addEventListener('dragleave', function () {
+            dragDropBox.classList.remove('dragover');
+        });
+
+        dragDropBox.addEventListener('drop', function (event) {
+            event.preventDefault();
+            dragDropBox.classList.remove('dragover');
+            const file = event.dataTransfer.files[0];
+            const codeExtensions = ['.py', '.java', '.c', '.cpp', '.css'];
+            const isCodeFile = file && codeExtensions.some(ext => file.name.endsWith(ext));
+
+            if (file && (file.name.endsWith('.md') || file.name.endsWith('.txt') || isCodeFile)) {
+                readFile(file);
+            } else if (file) {
+                const confirmBox = document.createElement('div');
+                confirmBox.className = 'confirm-box';
+                confirmBox.innerHTML = `
+                    <p>This file isn't .md or .txt. Load anyway?</p>
+                    <button id="load-anyway">Yes</button>
+                    <button id="cancel-load">No</button>
+                `;
+                document.body.appendChild(confirmBox);
+
+                document.getElementById('load-anyway').addEventListener('click', function () {
+                    readFile(file);
+                    document.body.removeChild(confirmBox);
+                });
+
+                document.getElementById('cancel-load').addEventListener('click', function () {
+                    document.body.removeChild(confirmBox);
+                });
+            }
+        });
+
+        dragDropBox.addEventListener('click', function () {
+            document.getElementById('file-input').click();
+        });
+    </script>
+</body>
+
+</html>

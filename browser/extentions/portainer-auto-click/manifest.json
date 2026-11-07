@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "K8s Auto Logs Clicker",
+  "version": "1.0",
+  "description": "Automatically clicks app logs and scrolls to bottom",
+  "permissions": ["scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Zoho Sprints Swimlane Collapse",
+  "version": "1.0",
+  "description": "Automatically expands all swimlanes in Zoho Sprints boards.",
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": ["https://sprints.zoho.in/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Expand Swimlanes"
+  }
+}
