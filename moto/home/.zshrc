@@ -174,10 +174,6 @@ hi() {
   echo "Hello 🤗"
 }
 
-gch() {
-  git clone "git@github.com:Hellmakima/$1.git"
-}
-
 mk() {
   mkdir $1
   cd $1

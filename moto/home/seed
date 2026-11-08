@@ -45,6 +45,7 @@ python-yt-dlp
 w3m
 wget
 which
+xxd
 yazi
 zbar # qr code
 zoxide

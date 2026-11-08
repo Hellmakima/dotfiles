@@ -13,7 +13,7 @@ opt.relativenumber = false
 
 if vim.env.TMUX then
   vim.g.clipboard = {
-    name = "osc52",
+    name = "OSC 52",
     copy = {
       ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
       ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
@@ -22,5 +22,13 @@ if vim.env.TMUX then
       ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
       ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
     },
+    cache_enabled = 0,
   }
 end
+
+-- Always use system clipboard for yanks and puts
+vim.opt.clipboard = "unnamedplus"
+
+vim.diagnostic.config({
+  update_in_insert = true,
+})

@@ -16,3 +16,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.setpos(".", save_cursor)
   end,
 })
+
+-- write all buffers on focus change or buffer change.
+vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
+  pattern = "*",
+  callback = function()
+    vim.cmd("silent! wall")
+  end,
+})
